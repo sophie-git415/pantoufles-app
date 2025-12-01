@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { Phone, Heart, Home } from 'lucide-react';
+import { Phone, Heart, Home, ChevronDown, Star, Leaf, Shield, Sparkles } from 'lucide-react';
 
 function LandingPage({ setCurrentPage }) {
     const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ function LandingPage({ setCurrentPage }) {
 
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [expandedFaq, setExpandedFaq] = useState(null);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -36,10 +38,7 @@ function LandingPage({ setCurrentPage }) {
         setLoading(true);
 
         try {
-            // TODO: Intégrer Supabase pour stocker les données
             console.log('Formulaire soumis:', formData);
-
-            // Simulation d'une requête
             await new Promise(resolve => setTimeout(resolve, 1000));
 
             setSubmitted(true);
@@ -61,234 +60,501 @@ function LandingPage({ setCurrentPage }) {
         }
     };
 
+    const faqItems = [
+        {
+            question: "Quels services proposez-vous ?",
+            answer: "Nous proposons : ménage, repassage, courses, et conseils diététiques. Chaque service est adapté à vos besoins."
+        },
+        {
+            question: "Combien ça coûte ?",
+            answer: "Les tarifs dépendent des services choisis. Contactez-nous pour un devis personnalisé !"
+        },
+        {
+            question: "Êtes-vous disponible le week-end ?",
+            answer: "Nous étudions chaque demande. Appelez-nous au numéro d'urgence pour en discuter."
+        },
+        {
+            question: "Comment annuler un service ?",
+            answer: "Vous pouvez annuler en nous contactant. Les conditions d'annulation dépendent de votre abonnement."
+        }
+    ];
+
+    const testimonials = [
+        {
+            name: "Madame Dupont, 78 ans",
+            text: "Depuis que PANTOUFLES s'occupe de mon ménage, j'ai plus de temps pour profiter de la vie. C'est un vrai soulagement !",
+            service: "Ménage"
+        },
+        {
+            name: "Monsieur Martin, 82 ans",
+            text: "La diététicienne m'a aidé à mieux manger. Je me sens plus en forme ! Merci PANTOUFLES.",
+            service: "Diététique"
+        },
+        {
+            name: "Mademoiselle Lemoine, 65 ans",
+            text: "Les courses me fatiguaient. Maintenant c'est quelqu'un d'autre qui s'en charge. Je peux me reposer.",
+            service: "Courses"
+        }
+    ];
+
+    const services = [
+        {
+            emoji: '🧹',
+            title: 'Ménage',
+            description: 'Un intérieur propre et accueillant sans effort',
+            details: 'Nettoyage complet, vitres, sols, salle de bain...'
+        },
+        {
+            emoji: '👕',
+            title: 'Repassage',
+            description: 'Vêtements parfaitement repassés',
+            details: 'Linge traité avec soin, prêt à porter'
+        },
+        {
+            emoji: '🛒',
+            title: 'Courses',
+            description: 'Vos achats faits pour vous',
+            details: 'Selon votre liste, budget et préférences'
+        },
+        {
+            emoji: '🥗',
+            title: 'Diététique',
+            description: 'Manger sainement, simplement',
+            details: 'Conseils nutritionnels adaptés à vous'
+        }
+    ];
+
+    const engagements = [
+        {
+            icon: '🌿',
+            title: 'Produits BIO',
+            description: 'Nous utilisons uniquement des produits écologiques et naturels pour nettoyer votre maison. Zéro chimie agressive, 100% nature.'
+        },
+        {
+            icon: '♻️',
+            title: 'Éco-responsable',
+            description: 'Réduction des déchets, produits biodégradables, respect de l\'environnement. Prendre soin de votre maison c\'est aussi prendre soin de la planète.'
+        },
+        {
+            icon: '🛡️',
+            title: 'Hygiène Garantie',
+            description: 'Normes strictes de nettoyage et d\'hygiène. Vos espaces sont traités avec la plus grande rigueur pour votre santé.'
+        }
+    ];
+
+    const serviceDetails = [
+        {
+            name: 'Ménage Complet',
+            items: [
+                'Rangement et ménage des chambres et salon selon vos habitudes',
+                'Nettoyage des sols : carrelage, parquet, moquette (adaptés au type)',
+                'Nettoyage linge de toilette, serviettes, torchons',
+                'Entretien complet cuisine et salle de bain',
+                'Détartrage robinetteries et joints',
+                'Nettoyage des vitres intérieures et extérieures',
+                'Époussetage mobilier et surfaces',
+                'Vidage poubelles et tri sélectif'
+            ]
+        },
+        {
+            name: 'Repassage',
+            items: [
+                'Repassage du linge selon vos préférences',
+                'Traitement des plis difficiles',
+                'Pliage et rangement soigneux',
+                'Respect des tissus délicats',
+                'Impeccabilité garantie'
+            ]
+        },
+        {
+            name: 'Courses',
+            items: [
+                'Achats selon votre liste préparée',
+                'Respect de votre budget',
+                'Sélection qualité des produits',
+                'Livraison à votre domicile',
+                'Rangement frigo/placard si souhaité'
+            ]
+        }
+    ];
+
     return (
-        <div className="bg-gradient-to-b from-orange-50 via-white to-blue-50 min-h-screen">
-            {/* Header */}
-            <header className="bg-white shadow-sm">
-                <div className="max-w-6xl mx-auto px-4 py-6 flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                        <span className="text-4xl">🩴</span>
-                        <div>
-                            <h1 className="text-2xl font-bold text-gray-800">PANTOUFLES</h1>
-                            <p className="text-sm text-gray-600">Service Adhoc</p>
+        <div className="bg-white">
+            {/* HEADER CUSTOMISÉ */}
+            <header className="bg-gradient-to-r from-orange-50 to-yellow-50 shadow-lg sticky top-0 z-50">
+                <div className="max-w-7xl mx-auto px-4 py-6">
+                    <div className="flex justify-between items-center gap-8">
+                        {/* SOLEIL ANIMÉ À GAUCHE */}
+                        <div className="flex-shrink-0">
+                            <div className="text-5xl animate-spin" style={{animationDuration: '3s'}}>☀️</div>
+                        </div>
+
+                        {/* TEXTE AU CENTRE */}
+                        <div className="flex-grow text-center">
+                            <h1 className="text-3xl md:text-4xl font-bold">
+                <span className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
+                  PANTOUFLES adhoc
+                </span>
+                            </h1>
+                            <p className="text-xl md:text-2xl font-bold text-gray-800 mt-2">
+                                ✨ Magnifie votre intérieur ✨
+                            </p>
+                            <p className="text-lg text-gray-700 font-semibold">
+                                Propreté et hygiène 100% 🏡
+                            </p>
+                        </div>
+
+                        {/* LOCALISATION À DROITE */}
+                        <div className="flex-shrink-0 text-center">
+                            <p className="text-2xl font-bold text-purple-600">📍</p>
+                            <p className="font-bold text-gray-800">Limoges</p>
+                            <p className="text-sm text-gray-600">Nous sommes là pour vous</p>
                         </div>
                     </div>
-                    <button
-                        onClick={() => setCurrentPage('login')}
-                        className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition"
-                    >
-                        Admin
-                    </button>
                 </div>
             </header>
 
-            {/* Hero Section */}
-            <section className="max-w-6xl mx-auto px-4 py-16">
-                <div className="grid md:grid-cols-2 gap-8 items-center">
-                    <div>
-                        <h2 className="text-5xl font-bold text-gray-800 mb-6">
-                            Bienvenue chez <span className="text-orange-500">PANTOUFLES</span>
-                        </h2>
-                        <p className="text-xl text-gray-600 mb-8">
-                            <Heart className="inline mr-2 text-red-500" />
-                            Parce que chacun mérite d'être bien <strong>chez soi</strong>
-                        </p>
-                        <div className="space-y-4">
-                            <div className="flex items-start gap-3">
-                                <Home className="text-blue-500 mt-1" />
-                                <p className="text-gray-700"><strong>Ménage & Repassage</strong> - Votre maison, propre et accueillante</p>
-                            </div>
-                            <div className="flex items-start gap-3">
-                                <Phone className="text-green-500 mt-1" />
-                                <p className="text-gray-700"><strong>Courses</strong> - Nous y allons pour vous</p>
-                            </div>
-                            <div className="flex items-start gap-3">
-                                <Heart className="text-pink-500 mt-1" />
-                                <p className="text-gray-700"><strong>Conseils Diététiques</strong> - Manger sainement, simplement</p>
-                            </div>
+            {/* HERO SECTION */}
+            <section className="bg-gradient-to-br from-orange-50 via-pink-50 to-blue-50 py-20">
+                <div className="max-w-6xl mx-auto px-4">
+                    <div className="grid md:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <h2 className="text-5xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight">
+                                Bienvenue chez <span className="bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">PANTOUFLES</span>
+                            </h2>
+                            <p className="text-xl text-gray-700 mb-8">
+                                <Heart className="inline mr-2 text-red-500" size={28} />
+                                <strong>Chacun mérite d'être bien chez soi.</strong> Nous nous occupons de tout.
+                            </p>
+                            <p className="text-gray-600 mb-8 text-lg">
+                                "Même une pantoufle moche a sa place dans la maison" - Chez nous aussi, chacun a sa place.
+                            </p>
+                            <a href="#formulaire" className="inline-block bg-gradient-to-r from-orange-400 to-pink-500 text-white font-bold py-4 px-8 rounded-xl hover:from-orange-500 hover:to-pink-600 transition transform hover:scale-105 text-lg">
+                                ➕ Je m'abonne
+                            </a>
                         </div>
-                    </div>
 
-                    {/* Illustration */}
-                    <div className="text-center">
-                        <div className="text-9xl mb-4">🩴</div>
-                        <p className="text-gray-600 text-lg italic">
-                            "Même une pantoufle moche a sa place"
-                        </p>
+                        <div className="text-center">
+                            <div className="text-9xl mb-6 animate-bounce">🩴</div>
+                            <p className="text-gray-600 text-lg italic">
+                                "Prendre soin de vous,<br/>c'est notre mission"
+                            </p>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            {/* Section Urgence */}
-            <section className="bg-red-50 py-8 my-12">
+            {/* SERVICES SECTION */}
+            <section className="py-20 bg-white">
+                <div className="max-w-6xl mx-auto px-4">
+                    <h3 className="text-4xl font-bold text-center text-gray-800 mb-16">
+                        Nos Services
+                    </h3>
+                    <div className="grid md:grid-cols-4 gap-8">
+                        {services.map((service, idx) => (
+                            <div key={idx} className="bg-gradient-to-br from-gray-50 to-gray-100 p-8 rounded-2xl hover:shadow-xl transition transform hover:scale-105">
+                                <div className="text-6xl mb-4 text-center">{service.emoji}</div>
+                                <h4 className="text-2xl font-bold text-gray-800 mb-2 text-center">{service.title}</h4>
+                                <p className="text-gray-700 text-center font-semibold mb-2">{service.description}</p>
+                                <p className="text-gray-600 text-sm text-center">{service.details}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* URGENCE SECTION */}
+            <section className="bg-gradient-to-r from-red-500 to-red-600 py-12">
                 <div className="max-w-6xl mx-auto px-4 text-center">
-                    <h3 className="text-2xl font-bold text-red-600 mb-2">Besoin d'une aide immédiate ?</h3>
-                    <p className="text-gray-700 mb-4">Appelez-nous directement :</p>
-                    <a href="tel:+33XXX" className="text-4xl font-bold text-red-600 hover:text-red-700">
+                    <h3 className="text-3xl font-bold text-white mb-4">
+                        <Phone className="inline mr-3" size={32} />
+                        Besoin d'une aide immédiate ?
+                    </h3>
+                    <a href="tel:+33XXX" className="text-4xl font-bold text-white hover:text-gray-100 transition">
                         📞 +33 X XX XX XX XX
                     </a>
                 </div>
             </section>
 
-            {/* Formulaire d'abonnement */}
-            <section className="max-w-2xl mx-auto px-4 py-16">
-                <div className="bg-white rounded-2xl shadow-lg p-8">
-                    <h3 className="text-3xl font-bold text-gray-800 mb-2">
-                        Souscrire à nos services
+            {/* NOTRE ENGAGEMENT & PRODUITS */}
+            <section className="py-20 bg-gray-50">
+                <div className="max-w-6xl mx-auto px-4">
+                    <h3 className="text-4xl font-bold text-center text-gray-800 mb-16">
+                        Notre Engagement & Nos Produits
                     </h3>
-                    <p className="text-gray-600 mb-8">
-                        Remplissez ce formulaire pour que nous puissions vous proposer une offre adaptée.
-                    </p>
 
-                    {submitted && (
-                        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-4 rounded-lg mb-6">
-                            ✅ Merci ! Nous vous recontacterons rapidement.
-                        </div>
-                    )}
-
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        {/* Nom */}
-                        <div>
-                            <label className="block text-gray-700 font-bold mb-2">Votre nom</label>
-                            <input
-                                type="text"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleInputChange}
-                                required
-                                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-600 focus:outline-none"
-                                placeholder="Jean Dupont"
-                            />
-                        </div>
-
-                        {/* Email */}
-                        <div>
-                            <label className="block text-gray-700 font-bold mb-2">Email</label>
-                            <input
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleInputChange}
-                                required
-                                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-600 focus:outline-none"
-                                placeholder="jean@example.com"
-                            />
-                        </div>
-
-                        {/* Téléphone */}
-                        <div>
-                            <label className="block text-gray-700 font-bold mb-2">Téléphone</label>
-                            <input
-                                type="tel"
-                                name="phone"
-                                value={formData.phone}
-                                onChange={handleInputChange}
-                                required
-                                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-600 focus:outline-none"
-                                placeholder="+33 X XX XX XX XX"
-                            />
-                        </div>
-
-                        {/* Adresse */}
-                        <div>
-                            <label className="block text-gray-700 font-bold mb-2">Adresse</label>
-                            <input
-                                type="text"
-                                name="address"
-                                value={formData.address}
-                                onChange={handleInputChange}
-                                required
-                                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-600 focus:outline-none"
-                                placeholder="123 Rue de la Paix, 87000 Limoges"
-                            />
-                        </div>
-
-                        {/* Services */}
-                        <div>
-                            <label className="block text-gray-700 font-bold mb-4">Services intéressants</label>
-                            <div className="space-y-3">
-                                {['Ménage', 'Repassage', 'Courses', 'Diététique'].map(service => (
-                                    <label key={service} className="flex items-center gap-3 cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={formData.services.includes(service)}
-                                            onChange={() => handleServiceChange(service)}
-                                            className="w-5 h-5 text-purple-600 rounded"
-                                        />
-                                        <span className="text-gray-700">{service}</span>
-                                    </label>
-                                ))}
+                    {/* Engagements */}
+                    <div className="grid md:grid-cols-3 gap-8 mb-16">
+                        {engagements.map((engagement, idx) => (
+                            <div key={idx} className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition">
+                                <div className="text-5xl mb-4 text-center">{engagement.icon}</div>
+                                <h4 className="text-2xl font-bold text-gray-800 mb-3 text-center">{engagement.title}</h4>
+                                <p className="text-gray-600 text-center">{engagement.description}</p>
                             </div>
+                        ))}
+                    </div>
+
+                    {/* Services Détaillés */}
+                    <div className="bg-white rounded-2xl shadow-lg p-8">
+                        <h4 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+                            Détail de nos Services
+                        </h4>
+                        <div className="grid md:grid-cols-3 gap-8">
+                            {serviceDetails.map((service, idx) => (
+                                <div key={idx} className="border-2 border-purple-200 rounded-xl p-6 hover:border-purple-600 transition">
+                                    <h5 className="text-xl font-bold text-purple-600 mb-4">{service.name}</h5>
+                                    <ul className="space-y-2">
+                                        {service.items.map((item, itemIdx) => (
+                                            <li key={itemIdx} className="flex gap-2 text-gray-700">
+                                                <span className="text-green-600 font-bold">✓</span>
+                                                <span>{item}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ))}
                         </div>
-
-                        {/* Conditions */}
-                        <label className="flex items-start gap-3 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                name="acceptConditions"
-                                checked={formData.acceptConditions}
-                                onChange={(e) => setFormData(prev => ({
-                                    ...prev,
-                                    acceptConditions: e.target.checked
-                                }))}
-                                required
-                                className="w-5 h-5 text-purple-600 rounded mt-1"
-                            />
-                            <span className="text-gray-600 text-sm">
-                J'accepte la <a href="#privacy" className="text-purple-600 hover:underline">politique de confidentialité</a> et le traitement de mes données personnelles.
-              </span>
-                        </label>
-
-                        {/* Bouton submit */}
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full bg-gradient-to-r from-orange-400 to-pink-500 text-white font-bold py-3 rounded-lg hover:from-orange-500 hover:to-pink-600 transition disabled:opacity-50"
-                        >
-                            {loading ? '⏳ En cours...' : '📋 Je m\'abonne'}
-                        </button>
-                    </form>
+                    </div>
                 </div>
             </section>
 
-            {/* Section Valeurs */}
-            <section className="bg-gray-50 py-16 my-12">
+            {/* POURQUOI PANTOUFLES */}
+            <section className="py-20 bg-white">
                 <div className="max-w-6xl mx-auto px-4">
-                    <h3 className="text-3xl font-bold text-center text-gray-800 mb-12">Notre Vision</h3>
+                    <h3 className="text-4xl font-bold text-center text-gray-800 mb-16">
+                        Pourquoi PANTOUFLES ?
+                    </h3>
                     <div className="grid md:grid-cols-3 gap-8">
-                        <div className="bg-white p-8 rounded-lg shadow">
-                            <p className="text-5xl mb-4">💙</p>
-                            <h4 className="text-xl font-bold text-gray-800 mb-2">Empathie</h4>
+                        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl shadow-lg">
+                            <div className="text-5xl mb-4">💙</div>
+                            <h4 className="text-2xl font-bold text-gray-800 mb-3">Empathie</h4>
                             <p className="text-gray-600">
-                                Nous comprenons vos besoins. Chacun mérite du respect et de la bienveillance.
+                                Nous comprenons vos besoins. Chacun mérite respect et bienveillance. Nous ne sommes pas juste des prestataires, nous sommes vos alliés.
                             </p>
                         </div>
-                        <div className="bg-white p-8 rounded-lg shadow">
-                            <p className="text-5xl mb-4">✨</p>
-                            <h4 className="text-xl font-bold text-gray-800 mb-2">Qualité</h4>
+                        <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-8 rounded-2xl shadow-lg">
+                            <div className="text-5xl mb-4">⭐</div>
+                            <h4 className="text-2xl font-bold text-gray-800 mb-3">Qualité</h4>
                             <p className="text-gray-600">
-                                Nos services sont professionnels, fiables et adaptés à vos besoins.
+                                Services professionnels, fiables et adaptés à VOS besoins. Nous ne sommes pas une usine, c'est du sur-mesure.
                             </p>
                         </div>
-                        <div className="bg-white p-8 rounded-lg shadow">
-                            <p className="text-5xl mb-4">🏠</p>
-                            <h4 className="text-xl font-bold text-gray-800 mb-2">Proximité</h4>
+                        <div className="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-2xl shadow-lg">
+                            <div className="text-5xl mb-4">🏠</div>
+                            <h4 className="text-2xl font-bold text-gray-800 mb-3">Proximité</h4>
                             <p className="text-gray-600">
-                                On est là pour vous, près de vous, quand vous en avez besoin.
+                                On est là pour vous, près de vous, quand vous en avez besoin. Pas de grandes multinationales froides, juste du vrai soutien.
                             </p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Politique de confidentialité (mini) */}
-            <section id="privacy" className="max-w-6xl mx-auto px-4 py-12 text-center text-gray-600 text-sm">
-                <p>
-                    Vos données sont traitées en toute sécurité et conformément au RGPD.
-                    Elles ne seront jamais vendues à des tiers.
-                    Vous pouvez demander la suppression de votre compte à tout moment.
-                </p>
+            {/* TÉMOIGNAGES */}
+            <section className="py-20 bg-gray-50">
+                <div className="max-w-6xl mx-auto px-4">
+                    <h3 className="text-4xl font-bold text-center text-gray-800 mb-16">
+                        Ils nous font confiance
+                    </h3>
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {testimonials.map((testimonial, idx) => (
+                            <div key={idx} className="bg-white p-8 rounded-2xl border-2 border-purple-200 shadow-lg">
+                                <div className="flex gap-1 mb-4">
+                                    {[...Array(5)].map((_, i) => (
+                                        <Star key={i} size={20} className="fill-yellow-400 text-yellow-400" />
+                                    ))}
+                                </div>
+                                <p className="text-gray-700 mb-4 italic">"{testimonial.text}"</p>
+                                <div className="border-t border-purple-200 pt-4">
+                                    <p className="font-bold text-gray-800">{testimonial.name}</p>
+                                    <p className="text-sm text-purple-600">Service : {testimonial.service}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </section>
+
+            {/* FORMULAIRE PANTOUFLE */}
+            <section id="formulaire" className="py-20 bg-gradient-to-br from-orange-50 to-pink-50">
+                <div className="max-w-2xl mx-auto px-4">
+                    <h3 className="text-4xl font-bold text-center text-gray-800 mb-4">
+                        Rejoignez PANTOUFLES
+                    </h3>
+                    <p className="text-center text-gray-600 mb-12">
+                        Remplissez ce formulaire et nous vous recontacterons rapidement
+                    </p>
+
+                    {submitted && (
+                        <div className="bg-green-100 border-2 border-green-400 text-green-700 px-6 py-4 rounded-2xl mb-8 text-center font-semibold">
+                            ✅ Merci ! Nous vous recontacterons très rapidement.
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-2xl p-10 border-4 border-orange-300 relative">
+                        {/* Déco pantoufle en haut */}
+                        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-6xl animate-bounce">🩴</div>
+
+                        <div className="space-y-6 mt-4">
+                            {/* Nom */}
+                            <div>
+                                <label className="block text-gray-800 font-bold mb-3 text-lg">👤 Votre nom</label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleInputChange}
+                                    required
+                                    className="w-full px-6 py-3 border-2 border-gray-300 rounded-2xl focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-200 text-lg transition"
+                                    placeholder="Jean Dupont"
+                                />
+                            </div>
+
+                            {/* Email */}
+                            <div>
+                                <label className="block text-gray-800 font-bold mb-3 text-lg">📧 Email</label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleInputChange}
+                                    required
+                                    className="w-full px-6 py-3 border-2 border-gray-300 rounded-2xl focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-200 text-lg transition"
+                                    placeholder="jean@example.com"
+                                />
+                            </div>
+
+                            {/* Téléphone */}
+                            <div>
+                                <label className="block text-gray-800 font-bold mb-3 text-lg">📱 Téléphone</label>
+                                <input
+                                    type="tel"
+                                    name="phone"
+                                    value={formData.phone}
+                                    onChange={handleInputChange}
+                                    required
+                                    className="w-full px-6 py-3 border-2 border-gray-300 rounded-2xl focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-200 text-lg transition"
+                                    placeholder="+33 X XX XX XX XX"
+                                />
+                            </div>
+
+                            {/* Adresse */}
+                            <div>
+                                <label className="block text-gray-800 font-bold mb-3 text-lg">🏠 Adresse</label>
+                                <input
+                                    type="text"
+                                    name="address"
+                                    value={formData.address}
+                                    onChange={handleInputChange}
+                                    required
+                                    className="w-full px-6 py-3 border-2 border-gray-300 rounded-2xl focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-200 text-lg transition"
+                                    placeholder="123 Rue de la Paix, 87000 Limoges"
+                                />
+                            </div>
+
+                            {/* Services */}
+                            <div>
+                                <label className="block text-gray-800 font-bold mb-4 text-lg">🛎️ Services intéressants</label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {['Ménage', 'Repassage', 'Courses', 'Diététique'].map(service => (
+                                        <label key={service} className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-purple-100 transition">
+                                            <input
+                                                type="checkbox"
+                                                checked={formData.services.includes(service)}
+                                                onChange={() => handleServiceChange(service)}
+                                                className="w-6 h-6 text-purple-600 rounded-lg accent-purple-600"
+                                            />
+                                            <span className="text-gray-700 font-medium">{service}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Conditions */}
+                            <label className="flex items-start gap-3 cursor-pointer p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition">
+                                <input
+                                    type="checkbox"
+                                    name="acceptConditions"
+                                    checked={formData.acceptConditions}
+                                    onChange={(e) => setFormData(prev => ({
+                                        ...prev,
+                                        acceptConditions: e.target.checked
+                                    }))}
+                                    required
+                                    className="w-6 h-6 text-purple-600 rounded mt-1 accent-purple-600"
+                                />
+                                <span className="text-gray-700">
+                  J'accepte la <a href="#privacy" className="text-purple-600 hover:underline font-bold">politique de confidentialité</a> et le traitement de mes données personnelles selon le RGPD.
+                </span>
+                            </label>
+
+                            {/* Bouton Submit */}
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full bg-gradient-to-r from-orange-400 to-pink-500 text-white font-bold py-4 rounded-2xl hover:from-orange-500 hover:to-pink-600 transition transform hover:scale-105 disabled:opacity-50 text-lg shadow-lg"
+                            >
+                                {loading ? '⏳ En cours...' : '🩴 Je m\'abonne à PANTOUFLES'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            {/* FAQ SECTION */}
+            <section className="py-20 bg-white">
+                <div className="max-w-3xl mx-auto px-4">
+                    <h3 className="text-4xl font-bold text-center text-gray-800 mb-16">
+                        Questions Fréquentes
+                    </h3>
+                    <div className="space-y-4">
+                        {faqItems.map((item, idx) => (
+                            <div key={idx} className="border-2 border-gray-300 rounded-2xl overflow-hidden hover:border-purple-600 transition">
+                                <button
+                                    onClick={() => setExpandedFaq(expandedFaq === idx ? null : idx)}
+                                    className="w-full px-6 py-4 bg-gray-50 hover:bg-purple-50 flex justify-between items-center transition"
+                                >
+                                    <span className="font-bold text-gray-800 text-lg text-left">{item.question}</span>
+                                    <ChevronDown
+                                        size={24}
+                                        className={`text-purple-600 transition transform ${expandedFaq === idx ? 'rotate-180' : ''}`}
+                                    />
+                                </button>
+                                {expandedFaq === idx && (
+                                    <div className="px-6 py-4 bg-purple-50 text-gray-700 border-t-2 border-gray-300">
+                                        {item.answer}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* FOOTER AVEC LIEN ADMIN CACHÉ */}
+            <footer className="bg-gray-800 text-white py-12">
+                <div className="max-w-6xl mx-auto px-4 text-center">
+                    <div className="mb-6">
+                        <p className="text-2xl font-bold mb-2">🩴 PANTOUFLES - Service Adhoc</p>
+                        <p className="text-gray-400">"Même une pantoufle moche a sa place"</p>
+                    </div>
+                    <p className="text-gray-400 text-sm mb-6">
+                        Vos données sont traitées en toute sécurité et conformément au RGPD.
+                        Elles ne seront jamais vendues à des tiers.
+                        Vous pouvez demander la suppression de votre compte à tout moment.
+                    </p>
+
+                    {/* LIEN ADMIN DISCRET */}
+                    <button
+                        onClick={() => setCurrentPage('login')}
+                        className="text-gray-500 hover:text-gray-300 text-xs underline transition mb-4"
+                    >
+                        Accès partenaires
+                    </button>
+
+                    <p className="text-gray-500 text-xs">© 2024 PANTOUFLES. Tous droits réservés.</p>
+                </div>
+            </footer>
         </div>
     );
 }

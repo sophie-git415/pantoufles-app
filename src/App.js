@@ -32,11 +32,8 @@ function App() {
                 <AdminDashboard onLogout={handleLogout} />
             )}
 
-            {/* Footer global */}
-            <footer className="bg-gray-800 text-white text-center py-4 mt-12">
-                <p>🩴 PANTOUFLES - Service Adhoc © 2024</p>
-                <p className="text-sm text-gray-400">Prendre soin de vous, c'est notre mission</p>
-            </footer>
+
+
         </div>
     );
 }
