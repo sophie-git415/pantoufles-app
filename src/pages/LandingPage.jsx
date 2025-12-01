@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
 import { Phone, Heart, Home, ChevronDown, Star, Leaf, Shield, Sparkles } from 'lucide-react';
+import { supabase } from '../supabaseClient';
 
 function LandingPage({ setCurrentPage }) {
     const [formData, setFormData] = useState({
@@ -14,6 +14,7 @@ function LandingPage({ setCurrentPage }) {
 
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const [expandedFaq, setExpandedFaq] = useState(null);
 
     const handleInputChange = (e) => {
@@ -36,11 +37,40 @@ function LandingPage({ setCurrentPage }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setError('');
 
         try {
-            console.log('Formulaire soumis:', formData);
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Vérifier que tous les champs sont remplis
+            if (!formData.name || !formData.email || !formData.phone || !formData.address) {
+                setError('Veuillez remplir tous les champs !');
+                setLoading(false);
+                return;
+            }
 
+            // Insérer les données dans Supabase
+            const { data, error: supabaseError } = await supabase
+                .from('clients')
+                .insert([
+                    {
+                        name: formData.name,
+                        email: formData.email,
+                        phone: formData.phone,
+                        address: formData.address,
+                        services: formData.services
+                    }
+                ])
+                .select();
+
+            if (supabaseError) {
+                console.error('Erreur Supabase:', supabaseError);
+                setError('Erreur : ' + supabaseError.message);
+                setLoading(false);
+                return;
+            }
+
+            console.log('✅ Client ajouté avec succès !', data);
+
+            // Succès !
             setSubmitted(true);
             setTimeout(() => {
                 setFormData({
@@ -53,8 +83,9 @@ function LandingPage({ setCurrentPage }) {
                 });
                 setSubmitted(false);
             }, 3000);
-        } catch (error) {
-            console.error('Erreur:', error);
+        } catch (err) {
+            console.error('Erreur:', err);
+            setError('Une erreur est survenue. Veuillez réessayer.');
         } finally {
             setLoading(false);
         }
@@ -388,6 +419,12 @@ function LandingPage({ setCurrentPage }) {
                     {submitted && (
                         <div className="bg-green-100 border-2 border-green-400 text-green-700 px-6 py-4 rounded-2xl mb-8 text-center font-semibold">
                             ✅ Merci ! Nous vous recontacterons très rapidement.
+                        </div>
+                    )}
+
+                    {error && (
+                        <div className="bg-red-100 border-2 border-red-400 text-red-700 px-6 py-4 rounded-2xl mb-8 text-center font-semibold">
+                            ❌ {error}
                         </div>
                     )}
 
