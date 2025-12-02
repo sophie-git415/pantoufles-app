@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Phone, Heart, Home, ChevronDown, Star, Leaf, Shield, Sparkles } from 'lucide-react';
+import { Phone, Heart, Home, ChevronDown, Star, Leaf, Shield, Sparkles, Users } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 
 function LandingPage({ setCurrentPage }) {
@@ -40,14 +40,12 @@ function LandingPage({ setCurrentPage }) {
         setError('');
 
         try {
-            // Vérifier que tous les champs sont remplis
             if (!formData.name || !formData.email || !formData.phone || !formData.address) {
                 setError('Veuillez remplir tous les champs !');
                 setLoading(false);
                 return;
             }
 
-            // Insérer les données dans Supabase
             const { data, error: supabaseError } = await supabase
                 .from('clients')
                 .insert([
@@ -70,7 +68,6 @@ function LandingPage({ setCurrentPage }) {
 
             console.log('✅ Client ajouté avec succès !', data);
 
-            // Succès !
             setSubmitted(true);
             setTimeout(() => {
                 setFormData({
@@ -375,6 +372,44 @@ function LandingPage({ setCurrentPage }) {
                             <h4 className="text-2xl font-bold text-gray-800 mb-3">Proximité</h4>
                             <p className="text-gray-600">
                                 On est là pour vous, près de vous, quand vous en avez besoin. Pas de grandes multinationales froides, juste du vrai soutien.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* REJOINDRE L'ÉQUIPE - NOUVELLE SECTION */}
+            <section className="py-20 bg-gradient-to-r from-purple-50 to-blue-50">
+                <div className="max-w-6xl mx-auto px-4">
+                    <div className="grid md:grid-cols-2 gap-12 items-center">
+                        {/* Texte */}
+                        <div>
+                            <h3 className="text-4xl font-bold text-gray-800 mb-6">
+                                Rejoignez notre équipe ! 💪
+                            </h3>
+                            <p className="text-xl text-gray-700 mb-6">
+                                Vous êtes passionné(e) par le service aux personnes ? Vous cherchez une activité flexible avec du sens ?
+                            </p>
+                            <ul className="space-y-3 mb-8 text-lg text-gray-700">
+                                <li>✅ <strong>Horaires flexibles</strong> - Travaillez quand vous voulez</li>
+                                <li>✅ <strong>Travail dignifié</strong> - Respect et bienveillance garantis</li>
+                                <li>✅ <strong>Rémunération juste</strong> - Transparence totale</li>
+                                <li>✅ <strong>Équipe sympathique</strong> - Vous n'êtes pas seul(e)</li>
+                            </ul>
+                            <button
+                                onClick={() => setCurrentPage('intervenants')}
+                                className="inline-block bg-gradient-to-r from-purple-500 to-blue-600 text-white font-bold py-4 px-8 rounded-xl hover:from-purple-600 hover:to-blue-700 transition transform hover:scale-105 text-lg shadow-lg"
+                            >
+                                <Users className="inline mr-2" size={24} />
+                                Soumettre ma candidature
+                            </button>
+                        </div>
+
+                        {/* Image/Icone */}
+                        <div className="text-center">
+                            <div className="text-9xl mb-6 animate-bounce">💼</div>
+                            <p className="text-gray-600 text-lg italic">
+                                "Faire partie d'une équipe<br/>qui change les choses"
                             </p>
                         </div>
                     </div>
