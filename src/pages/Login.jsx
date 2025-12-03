@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 
 function Login({ setCurrentPage, onLogin }) {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -55,14 +56,24 @@ function Login({ setCurrentPage, onLogin }) {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
                             <label className="block text-gray-700 font-bold mb-3">🔐 Mot de passe</label>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                className="w-full px-6 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-200 text-lg"
-                                placeholder="Entrez le mot de passe"
-                            />
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    className="w-full px-6 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-200 text-lg pr-12"
+                                    placeholder="Entrez le mot de passe"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-purple-600 transition"
+                                    title={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                                >
+                                    {showPassword ? <EyeOff size={24} /> : <Eye size={24} />}
+                                </button>
+                            </div>
                         </div>
 
                         <button

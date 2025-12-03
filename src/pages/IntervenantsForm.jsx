@@ -185,7 +185,7 @@ function IntervenantsForm({ setCurrentPage }) {
                         <div>
                             <label className="block text-gray-800 font-bold mb-4 text-lg">🛎️ Services que vous proposez</label>
                             <div className="grid grid-cols-2 gap-4">
-                                {['Ménage', 'Repassage', 'Courses', 'Diététique'].map(service => (
+                                {['Ménage', 'Repassage', 'Courses', 'Diététique', 'Aide au repas'].map(service => (
                                     <label key={service} className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-purple-100 transition">
                                         <input
                                             type="checkbox"

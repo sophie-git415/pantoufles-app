@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { Phone, Heart, Home, ChevronDown, Star, Leaf, Shield, Sparkles, Users } from 'lucide-react';
+import { ArrowLeft, Heart, Home, ChevronDown, Star, Leaf, Shield, Sparkles, Users } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import SunWithRays from '../SunWithRays';
+
 function LandingPage({ setCurrentPage }) {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         phone: '',
         address: '',
+        superficie: '',
+        nombre_pieces: '',
         services: [],
+        souhaits: '',
         acceptConditions: false
     });
 
@@ -41,7 +45,7 @@ function LandingPage({ setCurrentPage }) {
 
         try {
             if (!formData.name || !formData.email || !formData.phone || !formData.address) {
-                setError('Veuillez remplir tous les champs !');
+                setError('Veuillez remplir tous les champs obligatoires !');
                 setLoading(false);
                 return;
             }
@@ -54,7 +58,10 @@ function LandingPage({ setCurrentPage }) {
                         email: formData.email,
                         phone: formData.phone,
                         address: formData.address,
-                        services: formData.services
+                        superficie: formData.superficie,
+                        nombre_pieces: formData.nombre_pieces,
+                        services: formData.services,
+                        souhaits: formData.souhaits
                     }
                 ])
                 .select();
@@ -75,7 +82,10 @@ function LandingPage({ setCurrentPage }) {
                     email: '',
                     phone: '',
                     address: '',
+                    superficie: '',
+                    nombre_pieces: '',
                     services: [],
+                    souhaits: '',
                     acceptConditions: false
                 });
                 setSubmitted(false);
@@ -91,7 +101,7 @@ function LandingPage({ setCurrentPage }) {
     const faqItems = [
         {
             question: "Quels services proposez-vous ?",
-            answer: "Nous proposons : ménage, repassage, courses, et conseils diététiques. Chaque service est adapté à vos besoins."
+            answer: "Nous proposons : ménage, repassage, courses, diététique et aide au repas. Chaque service est adapté à vos besoins."
         },
         {
             question: "Combien ça coûte ?",
@@ -149,6 +159,12 @@ function LandingPage({ setCurrentPage }) {
             title: 'Diététique',
             description: 'Manger sainement, simplement',
             details: 'Conseils nutritionnels adaptés à vous'
+        },
+        {
+            emoji: '🍽️',
+            title: 'Aide au repas',
+            description: 'Préparation et aide à la prise de repas',
+            details: 'Accompagnement bienveillant et attentif'
         }
     ];
 
@@ -236,7 +252,7 @@ function LandingPage({ setCurrentPage }) {
                         <div className="flex-shrink-0 text-center">
                             <p className="text-2xl font-bold text-purple-600">📍</p>
                             <p className="font-bold text-gray-800">Limoges</p>
-                            <p className="text-sm text-gray-600">Nous sommes là pour vous</p>
+                            <p className="text-sm text-gray-600">et alentours</p>
                         </div>
                     </div>
                 </div>
@@ -278,8 +294,10 @@ function LandingPage({ setCurrentPage }) {
                     <h3 className="text-4xl font-bold text-center text-gray-800 mb-16">
                         Nos Services
                     </h3>
-                    <div className="grid md:grid-cols-4 gap-8">
-                        {services.map((service, idx) => (
+
+                    {/* Première rangée - 3 services */}
+                    <div className="grid md:grid-cols-3 gap-8 mb-8">
+                        {services.slice(0, 3).map((service, idx) => (
                             <div key={idx} className="bg-gradient-to-br from-gray-50 to-gray-100 p-8 rounded-2xl hover:shadow-xl transition transform hover:scale-105">
                                 <div className="text-6xl mb-4 text-center">{service.emoji}</div>
                                 <h4 className="text-2xl font-bold text-gray-800 mb-2 text-center">{service.title}</h4>
@@ -288,6 +306,20 @@ function LandingPage({ setCurrentPage }) {
                             </div>
                         ))}
                     </div>
+
+                    {/* Deuxième rangée - 2 services centrés */}
+                    <div className="flex justify-center">
+                        <div className="grid md:grid-cols-2 gap-8">
+                            {services.slice(3).map((service, idx) => (
+                                <div key={idx + 3} className="bg-gradient-to-br from-gray-50 to-gray-100 p-8 rounded-2xl hover:shadow-xl transition transform hover:scale-105">
+                                    <div className="text-6xl mb-4 text-center">{service.emoji}</div>
+                                    <h4 className="text-2xl font-bold text-gray-800 mb-2 text-center">{service.title}</h4>
+                                    <p className="text-gray-700 text-center font-semibold mb-2">{service.description}</p>
+                                    <p className="text-gray-600 text-sm text-center">{service.details}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -295,7 +327,7 @@ function LandingPage({ setCurrentPage }) {
             <section className="bg-gradient-to-r from-red-500 to-red-600 py-12">
                 <div className="max-w-6xl mx-auto px-4 text-center">
                     <h3 className="text-3xl font-bold text-white mb-4">
-                        <Phone className="inline mr-3" size={32} />
+                        <Home className="inline mr-3" size={32} />
                         Besoin d'une aide immédiate ?
                     </h3>
                     <a href="tel:+33XXX" className="text-4xl font-bold text-white hover:text-gray-100 transition">
@@ -378,11 +410,10 @@ function LandingPage({ setCurrentPage }) {
                 </div>
             </section>
 
-            {/* REJOINDRE L'ÉQUIPE - NOUVELLE SECTION */}
+            {/* REJOINDRE L'ÉQUIPE */}
             <section className="py-20 bg-gradient-to-r from-purple-50 to-blue-50">
                 <div className="max-w-6xl mx-auto px-4">
                     <div className="grid md:grid-cols-2 gap-12 items-center">
-                        {/* Texte */}
                         <div>
                             <h3 className="text-4xl font-bold text-gray-800 mb-6">
                                 Rejoignez notre équipe ! 💪
@@ -405,7 +436,6 @@ function LandingPage({ setCurrentPage }) {
                             </button>
                         </div>
 
-                        {/* Image/Icone */}
                         <div className="text-center">
                             <div className="text-9xl mb-6 animate-bounce">💼</div>
                             <p className="text-gray-600 text-lg italic">
@@ -524,11 +554,37 @@ function LandingPage({ setCurrentPage }) {
                                 />
                             </div>
 
+                            {/* Superficie */}
+                            <div>
+                                <label className="block text-gray-800 font-bold mb-3 text-lg">📐 Superficie (m²)</label>
+                                <input
+                                    type="text"
+                                    name="superficie"
+                                    value={formData.superficie}
+                                    onChange={handleInputChange}
+                                    className="w-full px-6 py-3 border-2 border-gray-300 rounded-2xl focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-200 text-lg transition"
+                                    placeholder="ex: 80 m²"
+                                />
+                            </div>
+
+                            {/* Nombre de pièces */}
+                            <div>
+                                <label className="block text-gray-800 font-bold mb-3 text-lg">🏠 Nombre de pièces</label>
+                                <input
+                                    type="text"
+                                    name="nombre_pieces"
+                                    value={formData.nombre_pieces}
+                                    onChange={handleInputChange}
+                                    className="w-full px-6 py-3 border-2 border-gray-300 rounded-2xl focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-200 text-lg transition"
+                                    placeholder="ex: 4 pièces"
+                                />
+                            </div>
+
                             {/* Services */}
                             <div>
                                 <label className="block text-gray-800 font-bold mb-4 text-lg">🛎️ Services intéressants</label>
                                 <div className="grid grid-cols-2 gap-4">
-                                    {['Ménage', 'Repassage', 'Courses', 'Diététique'].map(service => (
+                                    {['Ménage', 'Repassage', 'Courses', 'Diététique', 'Aide au repas'].map(service => (
                                         <label key={service} className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-purple-100 transition">
                                             <input
                                                 type="checkbox"
@@ -536,10 +592,24 @@ function LandingPage({ setCurrentPage }) {
                                                 onChange={() => handleServiceChange(service)}
                                                 className="w-6 h-6 text-purple-600 rounded-lg accent-purple-600"
                                             />
-                                            <span className="text-gray-700 font-medium">{service}</span>
+                                            <span className="text-gray-700 font-medium text-sm">{service}</span>
                                         </label>
                                     ))}
                                 </div>
+                            </div>
+
+                            {/* Souhaits / Préférences */}
+                            <div>
+                                <label className="block text-gray-800 font-bold mb-3 text-lg">💭 Vos souhaits, préférences, doléances (max 200 caractères)</label>
+                                <textarea
+                                    name="souhaits"
+                                    value={formData.souhaits}
+                                    onChange={(e) => setFormData({...formData, souhaits: e.target.value.slice(0, 200)})}
+                                    maxLength="200"
+                                    className="w-full px-6 py-3 border-2 border-gray-300 rounded-2xl focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-200 text-lg transition h-20"
+                                    placeholder="Décrivez vos souhaits, vos préférences, vos doléances..."
+                                />
+                                <p className="text-sm text-gray-500 mt-1">{formData.souhaits.length}/200</p>
                             </div>
 
                             {/* Conditions */}
@@ -603,7 +673,7 @@ function LandingPage({ setCurrentPage }) {
                 </div>
             </section>
 
-            {/* FOOTER AVEC LIEN ADMIN CACHÉ */}
+            {/* FOOTER */}
             <footer className="bg-gray-800 text-white py-12">
                 <div className="max-w-6xl mx-auto px-4 text-center">
                     <div className="mb-6">
