@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Phone, Heart, Home, ChevronDown, Star, Leaf, Shield, Sparkles, Users } from 'lucide-react';
 import { supabase } from '../supabaseClient';
-
+import SunWithRays from '../SunWithRays';
 function LandingPage({ setCurrentPage }) {
     const [formData, setFormData] = useState({
         name: '',
@@ -214,7 +214,7 @@ function LandingPage({ setCurrentPage }) {
                     <div className="flex justify-between items-center gap-8">
                         {/* SOLEIL ANIMÉ À GAUCHE */}
                         <div className="flex-shrink-0">
-                            <div className="text-5xl animate-spin" style={{animationDuration: '3s'}}>☀️</div>
+                            <SunWithRays />
                         </div>
 
                         {/* TEXTE AU CENTRE */}
