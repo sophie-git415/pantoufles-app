@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { ArrowLeft, Heart, Home, ChevronDown, Star, Leaf, Shield, Sparkles, Users } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import SunWithRays from '../SunWithRays';
+import ChatWidget from '../components/ChatWidget';
+import MapSection from '../components/MapSection';
 
 function LandingPage({ setCurrentPage }) {
     const [formData, setFormData] = useState({
@@ -471,6 +473,9 @@ function LandingPage({ setCurrentPage }) {
                 </div>
             </section>
 
+            {/* GOOGLE MAP - ZONE DE SERVICE */}
+            <MapSection />
+
             {/* FORMULAIRE PANTOUFLE */}
             <section id="formulaire" className="py-20 bg-gradient-to-br from-orange-50 to-pink-50">
                 <div className="max-w-2xl mx-auto px-4">
@@ -697,6 +702,9 @@ function LandingPage({ setCurrentPage }) {
                     <p className="text-gray-500 text-xs">© 2024 PANTOUFLES. Tous droits réservés.</p>
                 </div>
             </footer>
+
+            {/* CLAUDE CHAT WIDGET - FLOTTANT BAS À DROITE */}
+            <ChatWidget />
         </div>
     );
 }
