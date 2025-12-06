@@ -10,6 +10,7 @@ function MapSection() {
         // Récupérer la clé Google Maps depuis le backend
         const fetchMapsKey = async () => {
             try {
+                console.log('🔍 API_URL:', process.env.REACT_APP_API_URL);
                 const response = await fetch(`${process.env.REACT_APP_API_URL}/api/maps-key`);
                 const data = await response.json();
 
