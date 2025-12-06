@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Users, Home, Settings, Trash2, Calendar, Plus, Edit2, X } from 'lucide-react';
+import { LogOut, Users, Home, Settings, Trash2, Calendar, Plus, Edit2, X, Archive } from 'lucide-react';
 import { supabase } from '../supabaseClient';
+import ArchiveMissionsModal from '../components/ArchiveMissionsModal';
 
 function AdminDashboard({ onLogout }) {
     const [activeTab, setActiveTab] = useState('accueil');
@@ -10,6 +11,7 @@ function AdminDashboard({ onLogout }) {
     const [loadingClients, setLoadingClients] = useState(false);
     const [loadingIntervenants, setLoadingIntervenants] = useState(false);
     const [loadingMissions, setLoadingMissions] = useState(false);
+    const [archiveModalOpen, setArchiveModalOpen] = useState(false);
 
     const [editingClient, setEditingClient] = useState(null);
     const [editingIntervenant, setEditingIntervenant] = useState(null);
@@ -25,6 +27,9 @@ function AdminDashboard({ onLogout }) {
         heure_fin: '',
         description: '',
         moyen_paiement: '',
+        duree_heures: '',
+        duree_minutes: '',
+        tarif_horaire: '',
         montant_ttc: ''
     });
 
@@ -81,6 +86,23 @@ function AdminDashboard({ onLogout }) {
         } finally {
             setLoadingMissions(false);
         }
+    };
+
+    // ===== CALCUL AUTOMATIQUE MONTANT =====
+    const calculateMontant = (heures, minutes, tarif) => {
+        if (!heures && heures !== 0) heures = 0;
+        if (!minutes && minutes !== 0) minutes = 0;
+        if (!tarif) return '';
+
+        const totalHeures = parseFloat(heures) + (parseFloat(minutes) / 60);
+        const montant = (totalHeures * parseFloat(tarif)).toFixed(2);
+        return montant;
+    };
+
+    const updateMissionAndCalculate = (updates) => {
+        const updated = { ...newMission, ...updates };
+        const montant = calculateMontant(updated.duree_heures, updated.duree_minutes, updated.tarif_horaire);
+        setNewMission({ ...updated, montant_ttc: montant });
     };
 
     // ===== ÉDITION CLIENTS =====
@@ -206,6 +228,9 @@ function AdminDashboard({ onLogout }) {
                     heure_fin: '',
                     description: '',
                     moyen_paiement: '',
+                    duree_heures: '',
+                    duree_minutes: '',
+                    tarif_horaire: '',
                     montant_ttc: ''
                 });
                 loadMissions();
@@ -432,6 +457,17 @@ function AdminDashboard({ onLogout }) {
                 {/* TAB: Missions */}
                 {activeTab === 'missions' && (
                     <div className="space-y-8">
+                        {/* Bouton Archiver */}
+                        <div className="flex justify-end">
+                            <button
+                                onClick={() => setArchiveModalOpen(true)}
+                                className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg font-medium transition"
+                            >
+                                <Archive className="w-5 h-5" />
+                                Archiver Missions
+                            </button>
+                        </div>
+
                         {/* Créer une nouvelle mission */}
                         <div className="bg-white p-6 rounded-lg shadow">
                             <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
@@ -509,19 +545,6 @@ function AdminDashboard({ onLogout }) {
                                     </div>
 
                                     <div>
-                                        <label className="block text-gray-700 font-bold mb-2">💰 Montant TTC (€)</label>
-                                        <input
-                                            type="number"
-                                            step="0.01"
-                                            min="0"
-                                            value={newMission.montant_ttc}
-                                            onChange={(e) => setNewMission({...newMission, montant_ttc: e.target.value})}
-                                            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-600 focus:outline-none"
-                                            placeholder="ex: 60.00"
-                                        />
-                                    </div>
-
-                                    <div>
                                         <label className="block text-gray-700 font-bold mb-2">📅 Date *</label>
                                         <input
                                             type="date"
@@ -549,6 +572,57 @@ function AdminDashboard({ onLogout }) {
                                             value={newMission.heure_fin}
                                             onChange={(e) => setNewMission({...newMission, heure_fin: e.target.value})}
                                             className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-600 focus:outline-none"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-gray-700 font-bold mb-2">⏱️ Durée Heures</label>
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            value={newMission.duree_heures}
+                                            onChange={(e) => updateMissionAndCalculate({duree_heures: e.target.value})}
+                                            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-600 focus:outline-none"
+                                            placeholder="ex: 1"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-gray-700 font-bold mb-2">⏱️ Durée Minutes (0-59)</label>
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max="59"
+                                            value={newMission.duree_minutes}
+                                            onChange={(e) => updateMissionAndCalculate({duree_minutes: e.target.value})}
+                                            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-600 focus:outline-none"
+                                            placeholder="ex: 25"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-gray-700 font-bold mb-2">💰 Tarif horaire (€/h)</label>
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            min="0"
+                                            value={newMission.tarif_horaire}
+                                            onChange={(e) => updateMissionAndCalculate({tarif_horaire: e.target.value})}
+                                            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-600 focus:outline-none"
+                                            placeholder="ex: 15.00"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-gray-700 font-bold mb-2">💵 Montant TTC (€) - Auto-calculé</label>
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            min="0"
+                                            value={newMission.montant_ttc}
+                                            onChange={(e) => setNewMission({...newMission, montant_ttc: e.target.value})}
+                                            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-600 focus:outline-none bg-gray-50"
+                                            placeholder="Auto-calculé"
                                         />
                                     </div>
                                 </div>
@@ -1086,6 +1160,15 @@ function AdminDashboard({ onLogout }) {
                     </div>
                 )}
             </main>
+
+            {/* Modal Archiver */}
+            <ArchiveMissionsModal
+                isOpen={archiveModalOpen}
+                onClose={() => setArchiveModalOpen(false)}
+                onSuccess={() => {
+                    loadMissions();
+                }}
+            />
         </div>
     );
 }
