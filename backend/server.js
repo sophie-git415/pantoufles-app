@@ -18,6 +18,9 @@ const anthropic = new Anthropic({
     apiKey: process.env.CLAUDE_API_KEY
 });
 
+// Initialiser le client Resend
+const resend = new Resend(process.env.RESEND_API_KEY);  // ← AJOUTEZ CETTE LIGNE
+
 // ===== ENDPOINT CLAUDE CHAT =====
 app.post('/api/chat', async (req, res) => {
     try {
