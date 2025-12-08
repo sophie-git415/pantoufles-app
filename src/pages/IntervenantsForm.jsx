@@ -64,9 +64,35 @@ function IntervenantsForm({ setCurrentPage }) {
                 return;
             }
 
-            console.log('✅ Intervenante ajoutée avec succès !', data);
+            // Envoyer notification email à l'admin
+            try {
+                const notificationResponse = await fetch(`${process.env.REACT_APP_API_URL}/api/send-notification`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        type: 'INTERVENANT',
+                        data: {
+                            nom: formData.name,
+                            email: formData.email,
+                            telephone: formData.phone,
+                            services: formData.services.join(', ')
+                        }
+                    })
+                });
 
-            // Succès !
+                if (notificationResponse.ok) {
+                    console.log('✅ Notification admin envoyée');
+                } else {
+                    console.warn('⚠️ Notification admin non envoyée');
+                }
+            } catch (notifError) {
+                console.warn('⚠️ Erreur notification:', notifError);
+                // On continue même si la notification échoue
+            }
+
+// Succès !
             setSubmitted(true);
             setTimeout(() => {
                 setFormData({
@@ -77,6 +103,7 @@ function IntervenantsForm({ setCurrentPage }) {
                 });
                 setSubmitted(false);
             }, 3000);
+
         } catch (err) {
             console.error('Erreur:', err);
             setError('Une erreur est survenue. Veuillez réessayer.');
