@@ -16,10 +16,11 @@
   "author": "Sophie PANTOUFLES",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2",
+    "@anthropic-ai/sdk": "^0.24.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "@anthropic-ai/sdk": "^0.24.1"
+    "express": "^4.18.2",
+    "resend": "^6.5.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
