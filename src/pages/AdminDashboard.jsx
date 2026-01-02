@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Users, Home, Settings, Trash2, Calendar, Plus, Edit2, X, Archive } from 'lucide-react';
+import { LogOut, Users, Home, Settings, Trash2, Calendar,Filter, Plus, Edit2, Archive } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import ArchiveMissionsModal from '../components/ArchiveMissionsModal';
+import BouleDeCristal from '../components/BouleDeCristal';
+import IntervenantMap from '../components/IntervenantMap';
+
 
 function AdminDashboard({ onLogout }) {
     const [activeTab, setActiveTab] = useState('accueil');
@@ -32,6 +35,22 @@ function AdminDashboard({ onLogout }) {
         tarif_horaire: '',
         montant_ttc: ''
     });
+
+// Filtres Missions
+    const [missionFilters, setMissionFilters] = useState({
+        year: new Date().getFullYear(),
+        month: '',
+        dateFrom: '',
+        dateTo: '',
+        service: '',
+        intervenant: '',
+        client: ''
+    });
+
+
+
+
+
 
     // Charger les données au changement d'onglet
     useEffect(() => {
@@ -88,6 +107,9 @@ function AdminDashboard({ onLogout }) {
         }
     };
 
+
+
+
     // ===== CALCUL AUTOMATIQUE MONTANT =====
     const calculateMontant = (heures, minutes, tarif) => {
         if (!heures && heures !== 0) heures = 0;
@@ -104,6 +126,43 @@ function AdminDashboard({ onLogout }) {
         const montant = calculateMontant(updated.duree_heures, updated.duree_minutes, updated.tarif_horaire);
         setNewMission({ ...updated, montant_ttc: montant });
     };
+
+    const getFilteredMissions = () => {
+        return missions.filter(mission => {
+            // Filtre par année
+            const missionYear = new Date(mission.date_mission).getFullYear();
+            if (missionYear !== parseInt(missionFilters.year)) return false;
+
+            // Filtre par mois
+            if (missionFilters.month) {
+                const missionMonth = new Date(mission.date_mission).getMonth() + 1;
+                if (missionMonth !== parseInt(missionFilters.month)) return false;
+            }
+
+            // Filtre par date (du)
+            if (missionFilters.dateFrom) {
+                if (new Date(mission.date_mission) < new Date(missionFilters.dateFrom)) return false;
+            }
+
+            // Filtre par date (au)
+            if (missionFilters.dateTo) {
+                if (new Date(mission.date_mission) > new Date(missionFilters.dateTo)) return false;
+            }
+
+            // Filtre par service
+            if (missionFilters.service && mission.service !== missionFilters.service) return false;
+
+            // Filtre par intervenant
+            if (missionFilters.intervenant && mission.intervenant_id !== missionFilters.intervenant) return false;
+
+            // Filtre par client
+            if (missionFilters.client && mission.client_id !== missionFilters.client) return false;
+
+            return true;
+        });
+    };
+
+    const filteredMissions = getFilteredMissions();
 
     // ===== ÉDITION CLIENTS =====
     const startEditingClient = (client) => {
@@ -200,6 +259,10 @@ function AdminDashboard({ onLogout }) {
             console.error('Erreur:', err);
         }
     };
+
+
+
+
 
     // ===== MISSIONS =====
     const handleCreateMission = async (e) => {
@@ -413,6 +476,30 @@ function AdminDashboard({ onLogout }) {
                         <Users className="inline mr-2" size={20} />
                         Clients ({clients.length})
                     </button>
+                    <button
+                        onClick={() => setActiveTab('boulecristal')}
+                        className={`py-4 px-2 border-b-2 transition whitespace-nowrap ${
+                            activeTab === 'boulecristal'
+                                ? 'border-purple-600 text-purple-600'
+                                : 'border-transparent text-gray-600 hover:text-gray-800'
+                        }`}
+                    >
+                        <span className="mr-2">🔮</span>
+                        Boule de Cristal
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('map')}
+                        className={`py-4 px-2 border-b-2 transition whitespace-nowrap ${
+                            activeTab === 'map'
+                                ? 'border-purple-600 text-purple-600'
+                                : 'border-transparent text-gray-600 hover:text-gray-800'
+                        }`}
+                    >
+                        <span className="mr-2">🗺️</span>
+                        Carte des Missions
+                    </button>
+
+
                     <button
                         onClick={() => setActiveTab('parametres')}
                         className={`py-4 px-2 border-b-2 transition whitespace-nowrap ${
@@ -646,6 +733,116 @@ function AdminDashboard({ onLogout }) {
                             </form>
                         </div>
 
+                        {/* Filtres Missions */}
+                        <div className="bg-white p-6 rounded-lg shadow mb-6">
+                            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <Filter size={20} />
+                                Filtres
+                            </h3>
+
+                            <div className="grid md:grid-cols-3 lg:grid-cols-7 gap-4">
+                                {/* Année */}
+                                <div>
+                                    <label className="block text-gray-700 font-bold mb-2">Année</label>
+                                    <select
+                                        value={missionFilters.year}
+                                        onChange={(e) => setMissionFilters({...missionFilters, year: e.target.value})}
+                                        className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-600"
+                                    >
+                                        {[2024, 2025, 2026, 2027].map(year => (
+                                            <option key={year} value={year}>{year}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Mois */}
+                                <div>
+                                    <label className="block text-gray-700 font-bold mb-2">Mois</label>
+                                    <select
+                                        value={missionFilters.month}
+                                        onChange={(e) => setMissionFilters({...missionFilters, month: e.target.value})}
+                                        className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-600"
+                                    >
+                                        <option value="">-- Tous --</option>
+                                        {[...Array(12)].map((_, i) => (
+                                            <option key={i+1} value={i+1}>
+                                                {new Date(2024, i).toLocaleString('fr-FR', {month: 'long'})}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Du */}
+                                <div>
+                                    <label className="block text-gray-700 font-bold mb-2">Du</label>
+                                    <input
+                                        type="date"
+                                        value={missionFilters.dateFrom}
+                                        onChange={(e) => setMissionFilters({...missionFilters, dateFrom: e.target.value})}
+                                        className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-600"
+                                    />
+                                </div>
+
+                                {/* Au */}
+                                <div>
+                                    <label className="block text-gray-700 font-bold mb-2">Au</label>
+                                    <input
+                                        type="date"
+                                        value={missionFilters.dateTo}
+                                        onChange={(e) => setMissionFilters({...missionFilters, dateTo: e.target.value})}
+                                        className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-600"
+                                    />
+                                </div>
+
+                                {/* Service */}
+                                <div>
+                                    <label className="block text-gray-700 font-bold mb-2">Service</label>
+                                    <select
+                                        value={missionFilters.service}
+                                        onChange={(e) => setMissionFilters({...missionFilters, service: e.target.value})}
+                                        className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-600"
+                                    >
+                                        <option value="">-- Tous --</option>
+                                        {['Ménage', 'Repassage', 'Courses', 'Aide aux repas', 'Diététique'].map(service => (
+                                            <option key={service} value={service}>{service}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Intervenant */}
+                                <div>
+                                    <label className="block text-gray-700 font-bold mb-2">Intervenant</label>
+                                    <select
+                                        value={missionFilters.intervenant}
+                                        onChange={(e) => setMissionFilters({...missionFilters, intervenant: e.target.value})}
+                                        className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-600"
+                                    >
+                                        <option value="">-- Tous --</option>
+                                        {intervenants.map(intervenant => (
+                                            <option key={intervenant.id} value={intervenant.id}>{intervenant.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Client */}
+                                <div>
+                                    <label className="block text-gray-700 font-bold mb-2">Client</label>
+                                    <select
+                                        value={missionFilters.client}
+                                        onChange={(e) => setMissionFilters({...missionFilters, client: e.target.value})}
+                                        className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-600"
+                                    >
+                                        <option value="">-- Tous --</option>
+                                        {clients.map(client => (
+                                            <option key={client.id} value={client.id}>{client.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+
+
                         {/* Liste des missions */}
                         <div className="bg-white p-6 rounded-lg shadow">
                             <h2 className="text-2xl font-bold text-gray-800 mb-6">Liste des missions</h2>
@@ -656,7 +853,7 @@ function AdminDashboard({ onLogout }) {
                                 <p className="text-gray-500">Aucune mission créée pour le moment.</p>
                             ) : (
                                 <div className="space-y-4">
-                                    {missions.map((mission) => (
+                                    {filteredMissions.map((mission) => (
                                         <div key={mission.id} className="border-2 border-gray-300 rounded-lg p-6 hover:shadow-lg transition">
                                             {editingMission === mission.id ? (
                                                 // Mode édition
@@ -909,92 +1106,157 @@ function AdminDashboard({ onLogout }) {
                 {/* TAB: Intervenantes */}
                 {activeTab === 'intervenantes' && (
                     <div className="bg-white p-6 rounded-lg shadow">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-6">Gestion des intervenantes</h2>
+                            <h2 className="text-2xl font-bold text-gray-800 mb-6">Gestion des intervenantes</h2>
 
-                        {loadingIntervenants ? (
-                            <p className="text-gray-500">Chargement...</p>
-                        ) : intervenants.length === 0 ? (
-                            <p className="text-gray-500">Aucune intervenante.</p>
-                        ) : (
-                            <div className="space-y-4">
-                                {intervenants.map((intervenant) => (
-                                    <div key={intervenant.id} className="border-2 border-gray-300 rounded-lg p-6">
-                                        {editingIntervenant === intervenant.id ? (
-                                            // Mode édition
-                                            <div className="space-y-4">
-                                                <div className="grid md:grid-cols-2 gap-4">
-                                                    <div>
-                                                        <label className="block text-gray-700 font-bold mb-2">Nom</label>
-                                                        <input
-                                                            type="text"
-                                                            value={editFormData.name || ''}
-                                                            onChange={(e) => setEditFormData({...editFormData, name: e.target.value})}
-                                                            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
-                                                        />
+                            {loadingIntervenants ? (
+                                <p className="text-gray-500">Chargement...</p>
+                            ) : intervenants.length === 0 ? (
+                                <p className="text-gray-500">Aucune intervenante.</p>
+                            ) : (
+                                <div className="space-y-4">
+                                    {intervenants.map((intervenant) => (
+                                        <div key={intervenant.id} className="border-2 border-gray-300 rounded-lg p-6">
+                                            {editingIntervenant === intervenant.id ? (
+                                                // Mode édition
+                                                <div className="space-y-4">
+                                                    <div className="grid md:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <label className="block text-gray-700 font-bold mb-2">Nom</label>
+                                                            <input
+                                                                type="text"
+                                                                value={editFormData.name || ''}
+                                                                onChange={(e) => setEditFormData({...editFormData, name: e.target.value})}
+                                                                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <label className="block text-gray-700 font-bold mb-2">Email</label>
+                                                            <input
+                                                                type="email"
+                                                                value={editFormData.email || ''}
+                                                                onChange={(e) => setEditFormData({...editFormData, email: e.target.value})}
+                                                                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <label className="block text-gray-700 font-bold mb-2">Téléphone</label>
+                                                            <input
+                                                                type="tel"
+                                                                value={editFormData.phone || ''}
+                                                                onChange={(e) => setEditFormData({...editFormData, phone: e.target.value})}
+                                                                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <label className="block text-gray-700 font-bold mb-2">Ancienneté (années)</label>
+                                                            <input
+                                                                type="number"
+                                                                min="0"
+                                                                value={editFormData.anciennete_annees || ''}
+                                                                onChange={(e) => setEditFormData({...editFormData, anciennete_annees: e.target.value})}
+                                                                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <label className="block text-gray-700 font-bold mb-2">Secteur d'intervention</label>
+                                                            <select
+                                                                value={editFormData.secteur_intervention || ''}
+                                                                onChange={(e) => setEditFormData({...editFormData, secteur_intervention: e.target.value})}
+                                                                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
+                                                            >
+                                                                <option value="5km">📍 Rayon 5km</option>
+                                                                <option value="10km">📍 Rayon 10km</option>
+                                                                <option value="15km">📍 Rayon 15km</option>
+                                                                <option value="20km">📍 Rayon 20km</option>
+                                                                <option value="illimite">📍 Illimité</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div>
+                                                            <label className="block text-gray-700 font-bold mb-2">📍 Adresse</label>
+                                                            <input
+                                                                type="text"
+                                                                value={editFormData.address || ''}
+                                                                onChange={(e) => setEditFormData({...editFormData, address: e.target.value})}
+                                                                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
+                                                                placeholder="ex: 45 Rue Dupont, 87000 Limoges"
+                                                            />
+                                                        </div>
+
+
+
+                                                        <div>
+                                                            <label className="flex items-center gap-2 mt-6">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={editFormData.accepte_charte || false}
+                                                                    onChange={(e) => setEditFormData({...editFormData, accepte_charte: e.target.checked})}
+                                                                    className="w-4 h-4 text-purple-600 rounded"
+                                                                />
+                                                                <span className="text-sm font-medium">Charte acceptée ✅</span>
+                                                            </label>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <label className="block text-gray-700 font-bold mb-2">Email</label>
-                                                        <input
-                                                            type="email"
-                                                            value={editFormData.email || ''}
-                                                            onChange={(e) => setEditFormData({...editFormData, email: e.target.value})}
-                                                            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <label className="block text-gray-700 font-bold mb-2">Téléphone</label>
-                                                        <input
-                                                            type="tel"
-                                                            value={editFormData.phone || ''}
-                                                            onChange={(e) => setEditFormData({...editFormData, phone: e.target.value})}
-                                                            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg"
-                                                        />
+                                                    <div className="flex gap-2">
+                                                        <button
+                                                            onClick={saveIntervenantChanges}
+                                                            className="flex-1 bg-green-600 text-white font-bold py-2 rounded-lg hover:bg-green-700 transition"
+                                                        >
+                                                            ✅ Sauvegarder
+                                                        </button>
+                                                        <button
+                                                            onClick={cancelEditingIntervenant}
+                                                            className="flex-1 bg-gray-400 text-white font-bold py-2 rounded-lg hover:bg-gray-500 transition"
+                                                        >
+                                                            ❌ Annuler
+                                                        </button>
                                                     </div>
                                                 </div>
-                                                <div className="flex gap-2">
-                                                    <button
-                                                        onClick={saveIntervenantChanges}
-                                                        className="flex-1 bg-green-600 text-white font-bold py-2 rounded-lg hover:bg-green-700 transition"
-                                                    >
-                                                        ✅ Sauvegarder
-                                                    </button>
-                                                    <button
-                                                        onClick={cancelEditingIntervenant}
-                                                        className="flex-1 bg-gray-400 text-white font-bold py-2 rounded-lg hover:bg-gray-500 transition"
-                                                    >
-                                                        ❌ Annuler
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            // Mode affichage
-                                            <>
-                                                <p className="font-bold text-lg">{intervenant.name}</p>
-                                                <p className="text-gray-600">📧 {intervenant.email}</p>
-                                                <p className="text-gray-600">📱 {intervenant.phone}</p>
-                                                <div className="flex gap-2 mt-4">
-                                                    <button
-                                                        onClick={() => startEditingIntervenant(intervenant)}
-                                                        className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium"
-                                                    >
-                                                        <Edit2 size={18} />
-                                                        Modifier
-                                                    </button>
-                                                    <button
-                                                        onClick={() => deleteIntervenant(intervenant.id)}
-                                                        className="flex items-center gap-2 text-red-600 hover:text-red-800 font-medium"
-                                                    >
-                                                        <Trash2 size={18} />
-                                                        Supprimer
-                                                    </button>
-                                                </div>
-                                            </>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                                            ) : (
+                                                // Mode affichage
+                                                <>
+                                                    <p className="font-bold text-lg">{intervenant.name}</p>
+                                                    <p className="text-gray-600">📧 {intervenant.email}</p>
+                                                    <p className="text-gray-600">📱 {intervenant.phone}</p>
+                                                    {intervenant.anciennete_annees && (
+                                                        <p className="text-gray-600">📅 {intervenant.anciennete_annees} ans d'expérience</p>
+                                                    )}
+                                                    {intervenant.secteur_intervention && (
+                                                        <p className="text-gray-600">🗺️ Secteur: {intervenant.secteur_intervention}</p>
+                                                    )}
+
+
+                                                    {intervenant.services && intervenant.services.length > 0 && (
+                                                        <p className="text-gray-600">🛎️ Services: {intervenant.services.join(', ')}</p>
+                                                    )}
+
+                                                    {intervenant.accepte_charte && (
+                                                        <p className="text-green-600 text-sm">✅ Charte de confidentialité acceptée</p>
+                                                    )}
+                                                    <div className="flex gap-2 mt-4">
+                                                        <button
+                                                            onClick={() => startEditingIntervenant(intervenant)}
+                                                            className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium"
+                                                        >
+                                                            <Edit2 size={18} />
+                                                            Modifier
+                                                        </button>
+                                                        <button
+                                                            onClick={() => deleteIntervenant(intervenant.id)}
+                                                            className="flex items-center gap-2 text-red-600 hover:text-red-800 font-medium"
+                                                        >
+                                                            <Trash2 size={18} />
+                                                            Supprimer
+                                                        </button>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
                 )}
 
                 {/* TAB: Clients */}
@@ -1159,6 +1421,15 @@ function AdminDashboard({ onLogout }) {
                         </div>
                     </div>
                 )}
+                {/* TAB: Boule de Cristal */}
+                {activeTab === 'boulecristal' && (
+                    <BouleDeCristal clients={clients} intervenants={intervenants} />
+                )}
+                {/* TAB: Carte des Missions */}
+                {activeTab === 'map' && (
+                    <IntervenantMap clients={clients} intervenants={intervenants} />
+                )}
+
             </main>
 
             {/* Modal Archiver */}

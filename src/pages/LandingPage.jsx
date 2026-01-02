@@ -226,34 +226,47 @@ function LandingPage({ setCurrentPage }) {
 
     return (
         <div className="bg-white">
-            {/* HEADER CUSTOMISÉ */}
+            {/* HEADER CUSTOMISÉ - CRYSTAL CLAIR */}
             <header className="bg-gradient-to-r from-orange-50 to-yellow-50 shadow-lg sticky top-0 z-50">
-                <div className="max-w-7xl mx-auto px-4 py-6">
+                <div className="max-w-7xl mx-auto px-4 py-2">
                     <div className="flex justify-between items-center gap-8">
-                        {/* SOLEIL ANIMÉ À GAUCHE */}
+                        {/* LOGO HEXAGONAL À GAUCHE */}
                         <div className="flex-shrink-0">
-                            <SunWithRays />
+                            <img
+                                src="/pantoufles_logo.png"
+                                alt="PANTOUFLES Logo"
+                                className="h-72 w-60 object-contain"
+                            />
                         </div>
 
-                        {/* TEXTE AU CENTRE */}
+                        {/* TEXTE AU CENTRE - CRYSTAL CLAIR */}
                         <div className="flex-grow text-center">
-                            <h1 className="text-3xl md:text-4xl font-bold">
-                <span className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
-                  PANTOUFLES adhoc
-                </span>
+                            <h1 className="text-4xl md:text-5xl font-bold mb-3">
+                            <span className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
+                                🧹 MÉNAGE À DOMICILE
+                            </span>
                             </h1>
-                            <p className="text-xl md:text-2xl font-bold text-gray-800 mt-2">
-                                ✨ Magnifie votre intérieur ✨
+
+                            <p className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+                                De 15€/h - Intervenantes certifiées
                             </p>
-                            <p className="text-lg text-gray-700 font-semibold">
-                                Propreté et hygiène 100% 🏡
+
+                            <p className="text-2xl md:text-3xl text-gray-800 font-bold mb-4">
+                                Résidentiel • Bureaux • Cabinets médicaux
                             </p>
+
+                            <button
+                                onClick={() => document.getElementById('form-section')?.scrollIntoView({ behavior: 'smooth' })}
+                                className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white px-8 py-3 rounded-lg font-bold text-lg transition transform hover:scale-105"
+                            >
+                                ✨ Demander un devis
+                            </button>
                         </div>
 
                         {/* LOCALISATION À DROITE */}
                         <div className="flex-shrink-0 text-center">
-                            <p className="text-2xl font-bold text-purple-600">📍</p>
-                            <p className="font-bold text-gray-800">Limoges</p>
+                            <p className="text-3xl font-bold text-purple-600">📍</p>
+                            <p className="font-bold text-gray-800 text-lg">Limoges</p>
                             <p className="text-sm text-gray-600">et alentours</p>
                         </div>
                     </div>
@@ -498,7 +511,7 @@ function LandingPage({ setCurrentPage }) {
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-2xl p-10 border-4 border-orange-300 relative">
+                    <form id="form-section" onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-2xl p-10 border-4 border-orange-300 relative">
                         {/* Déco pantoufle en haut */}
                         <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-6xl animate-bounce">🩴</div>
 

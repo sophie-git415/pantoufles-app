@@ -7,7 +7,10 @@ function IntervenantsForm({ setCurrentPage }) {
         name: '',
         email: '',
         phone: '',
-        services: []
+        anciennete_annees: '',
+        secteur_intervention: '5km',
+        services: [],
+        accepte_charte: false
     });
 
     const [submitted, setSubmitted] = useState(false);
@@ -19,6 +22,14 @@ function IntervenantsForm({ setCurrentPage }) {
         setFormData(prev => ({
             ...prev,
             [name]: value
+        }));
+    };
+
+    const handleCheckboxChange = (e) => {
+        const { name, checked } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: checked
         }));
     };
 
@@ -37,9 +48,9 @@ function IntervenantsForm({ setCurrentPage }) {
         setError('');
 
         try {
-            // Vérifier que tous les champs sont remplis
-            if (!formData.name || !formData.email || !formData.phone) {
-                setError('Veuillez remplir tous les champs !');
+            // Vérifier que tous les champs obligatoires sont remplis
+            if (!formData.name || !formData.email || !formData.phone || !formData.accepte_charte) {
+                setError('Veuillez remplir tous les champs et accepter la charte de confidentialité !');
                 setLoading(false);
                 return;
             }
@@ -52,7 +63,10 @@ function IntervenantsForm({ setCurrentPage }) {
                         name: formData.name,
                         email: formData.email,
                         phone: formData.phone,
-                        services: formData.services
+                        anciennete_annees: formData.anciennete_annees ? parseInt(formData.anciennete_annees) : 0,
+                        secteur_intervention: formData.secteur_intervention,
+                        services: formData.services,
+                        accepte_charte: formData.accepte_charte
                     }
                 ])
                 .select();
@@ -77,6 +91,8 @@ function IntervenantsForm({ setCurrentPage }) {
                             nom: formData.name,
                             email: formData.email,
                             telephone: formData.phone,
+                            anciennete: formData.anciennete_annees ? `${formData.anciennete_annees} ans` : 'Non spécifiée',
+                            secteur: formData.secteur_intervention,
                             services: formData.services.join(', ')
                         }
                     })
@@ -92,14 +108,17 @@ function IntervenantsForm({ setCurrentPage }) {
                 // On continue même si la notification échoue
             }
 
-// Succès !
+            // Succès !
             setSubmitted(true);
             setTimeout(() => {
                 setFormData({
                     name: '',
                     email: '',
                     phone: '',
-                    services: []
+                    anciennete_annees: '',
+                    secteur_intervention: '5km',
+                    services: [],
+                    accepte_charte: false
                 });
                 setSubmitted(false);
             }, 3000);
@@ -168,7 +187,7 @@ function IntervenantsForm({ setCurrentPage }) {
                     <div className="space-y-6 mt-4">
                         {/* Nom */}
                         <div>
-                            <label className="block text-gray-800 font-bold mb-3 text-lg">👤 Votre nom et prénom</label>
+                            <label className="block text-gray-800 font-bold mb-3 text-lg">👤 Votre nom et prénom *</label>
                             <input
                                 type="text"
                                 name="name"
@@ -182,7 +201,7 @@ function IntervenantsForm({ setCurrentPage }) {
 
                         {/* Email */}
                         <div>
-                            <label className="block text-gray-800 font-bold mb-3 text-lg">📧 Email</label>
+                            <label className="block text-gray-800 font-bold mb-3 text-lg">📧 Email *</label>
                             <input
                                 type="email"
                                 name="email"
@@ -196,7 +215,7 @@ function IntervenantsForm({ setCurrentPage }) {
 
                         {/* Téléphone */}
                         <div>
-                            <label className="block text-gray-800 font-bold mb-3 text-lg">📱 Téléphone</label>
+                            <label className="block text-gray-800 font-bold mb-3 text-lg">📱 Téléphone *</label>
                             <input
                                 type="tel"
                                 name="phone"
@@ -206,6 +225,39 @@ function IntervenantsForm({ setCurrentPage }) {
                                 className="w-full px-6 py-3 border-2 border-gray-300 rounded-2xl focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-200 text-lg transition"
                                 placeholder="+33 X XX XX XX XX"
                             />
+                        </div>
+
+                        {/* Ancienneté */}
+                        <div>
+                            <label className="block text-gray-800 font-bold mb-3 text-lg">📅 Ancienneté (années d'expérience)</label>
+                            <input
+                                type="number"
+                                name="anciennete_annees"
+                                min="0"
+                                value={formData.anciennete_annees}
+                                onChange={handleInputChange}
+                                className="w-full px-6 py-3 border-2 border-gray-300 rounded-2xl focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-200 text-lg transition"
+                                placeholder="ex: 2"
+                            />
+                        </div>
+
+                        {/* Secteur d'intervention */}
+                        <div>
+                            <label className="block text-gray-800 font-bold mb-3 text-lg">🗺️ Secteur d'intervention *</label>
+                            <select
+                                name="secteur_intervention"
+                                value={formData.secteur_intervention}
+                                onChange={handleInputChange}
+                                required
+                                className="w-full px-6 py-3 border-2 border-gray-300 rounded-2xl focus:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-200 text-lg transition"
+                            >
+                                <option value="">Sélectionner un secteur</option>
+                                <option value="5km">📍 Rayon 5km</option>
+                                <option value="10km">📍 Rayon 10km</option>
+                                <option value="15km">📍 Rayon 15km</option>
+                                <option value="20km">📍 Rayon 20km</option>
+                                <option value="illimite">📍 Illimité</option>
+                            </select>
                         </div>
 
                         {/* Services */}
@@ -224,6 +276,30 @@ function IntervenantsForm({ setCurrentPage }) {
                                     </label>
                                 ))}
                             </div>
+                        </div>
+
+                        {/* Charte de Confidentialité */}
+                        <div className="bg-blue-50 border-2 border-blue-300 rounded-xl p-4">
+                            <h3 className="font-bold text-blue-900 mb-3">🔒 Charte de Confidentialité PANTOUFLES</h3>
+                            <div className="bg-white p-3 rounded mb-3 max-h-32 overflow-y-auto text-sm text-gray-700 border border-gray-300">
+                                <p className="mb-2"><strong>Article 1 : Respect de la vie privée</strong></p>
+                                <p className="mb-2">L'intervenante s'engage à respecter la confidentialité des données personnelles des clients.</p>
+                                <p className="mb-2"><strong>Article 2 : Discrétion</strong></p>
+                                <p className="mb-2">Les informations concernant la vie privée des clients (famille, finances, santé) ne doivent pas être divulguées.</p>
+                                <p className="mb-2"><strong>Article 3 : Professionnalisme</strong></p>
+                                <p>L'intervenante s'engage à maintenir une relation professionnelle avec les clients.</p>
+                            </div>
+                            <label className="flex items-start gap-3 cursor-pointer p-3 bg-white rounded hover:bg-blue-100 transition border border-blue-200">
+                                <input
+                                    type="checkbox"
+                                    name="accepte_charte"
+                                    checked={formData.accepte_charte}
+                                    onChange={handleCheckboxChange}
+                                    required
+                                    className="w-6 h-6 text-blue-600 rounded mt-1 accent-blue-600"
+                                />
+                                <span className="text-gray-700 font-medium">✅ J'accepte la charte de confidentialité PANTOUFLES</span>
+                            </label>
                         </div>
 
                         {/* Message info */}
@@ -247,8 +323,8 @@ function IntervenantsForm({ setCurrentPage }) {
                                 className="w-6 h-6 text-purple-600 rounded mt-1 accent-purple-600"
                             />
                             <span className="text-gray-700">
-                J'accepte les <a href="#privacy" className="text-purple-600 hover:underline font-bold">conditions d'utilisation</a> et le traitement de mes données personnelles.
-              </span>
+                                J'accepte les <a href="#privacy" className="text-purple-600 hover:underline font-bold">conditions d'utilisation</a> et le traitement de mes données personnelles.
+                            </span>
                         </label>
 
                         {/* Bouton Submit */}
