@@ -44,7 +44,8 @@ function AdminDashboard({ onLogout }) {
         dateTo: '',
         service: '',
         intervenant: '',
-        client: ''
+        client: '',
+        statut: ''
     });
 
 
@@ -157,6 +158,8 @@ function AdminDashboard({ onLogout }) {
 
             // Filtre par client
             if (missionFilters.client && mission.client_id !== missionFilters.client) return false;
+
+            if (missionFilters.statut && mission.statut !== missionFilters.statut) return false;
 
             return true;
         });
@@ -836,6 +839,22 @@ function AdminDashboard({ onLogout }) {
                                         {clients.map(client => (
                                             <option key={client.id} value={client.id}>{client.name}</option>
                                         ))}
+                                    </select>
+                                </div>
+                                {/* Statut ← NOUVEAU */}
+                                <div>
+                                    <label>Statut</label>
+                                    <select
+                                        value={missionFilters.statut}
+                                        onChange={(e) => setMissionFilters({...missionFilters, statut: e.target.value})}
+                                        className="..."
+                                    >
+                                        <option value="">-- Tous --</option>
+                                        <option value="en_attente">⏳ En attente</option>
+                                        <option value="confirmee">✅ Confirmée</option>
+                                        <option value="en_cours">🔄 En cours</option>
+                                        <option value="terminee">🎉 Terminée</option>
+                                        <option value="annulee">❌ Annulée</option>
                                     </select>
                                 </div>
                             </div>
