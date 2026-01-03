@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Users, Home, Settings, Trash2, Calendar,Filter, Plus, Edit2, Archive } from 'lucide-react';
+import { LogOut, Users, Home, Settings, Trash2, Calendar, Filter, Plus, Edit2, Archive } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import ArchiveMissionsModal from '../components/ArchiveMissionsModal';
 import BouleDeCristal from '../components/BouleDeCristal';
@@ -45,7 +45,7 @@ function AdminDashboard({ onLogout }) {
         service: '',
         intervenant: '',
         client: '',
-        statut: ''
+        status: ''
     });
 
 
@@ -159,10 +159,14 @@ function AdminDashboard({ onLogout }) {
             // Filtre par client
             if (missionFilters.client && mission.client_id !== missionFilters.client) return false;
             // Filtre par statut
-            if (missionFilters.status && mission.status !== missionFilters.status) return false;
+            if (missionFilters.status && mission.status !== missionFilters.status) {
+                return false;
+            } else {
+                return true;
+            }
 
-            return true;
         });
+
     };
 
     const filteredMissions = getFilteredMissions();
@@ -841,12 +845,12 @@ function AdminDashboard({ onLogout }) {
                                         ))}
                                     </select>
                                 </div>
-                                {/* Statut ← NOUVEAU */}
+                                {/* Statut */}
                                 <div>
                                     <label>Statut</label>
                                     <select
-                                        value={missionFilters.statut}
-                                        onChange={(e) => setMissionFilters({...missionFilters, statut: e.target.value})}
+                                        value={missionFilters.status}
+                                        onChange={(e) => setMissionFilters({...missionFilters, status: e.target.value})}
                                         className="..."
                                     >
                                         <option value="">-- Tous --</option>
@@ -876,7 +880,7 @@ function AdminDashboard({ onLogout }) {
                                         <div key={mission.id} className="border-2 border-gray-300 rounded-lg p-6 hover:shadow-lg transition">
                                             {editingMission === mission.id ? (
                                                 // Mode édition
-                                                <div clssName="space-y-4">
+                                                <div className="space-y-4">
                                                     <div className="grid md:grid-cols-2 gap-4">
                                                         <div>
                                                             <label className="block text-gray-700 font-bold mb-2">Client</label>
