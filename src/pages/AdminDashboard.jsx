@@ -851,10 +851,10 @@ function AdminDashboard({ onLogout }) {
                                     >
                                         <option value="">-- Tous --</option>
                                         <option value="en_attente">⏳ En attente</option>
-                                        <option value="confirmee">✅ Confirmée</option>
+                                        <option value="confirmée">✅ Confirmée</option>
                                         <option value="en_cours">🔄 En cours</option>
-                                        <option value="terminee">🎉 Terminée</option>
-                                        <option value="annulee">❌ Annulée</option>
+                                        <option value="terminée">🎉 Terminée</option>
+                                        <option value="annulée">❌ Annulée</option>
                                     </select>
                                 </div>
                             </div>
@@ -876,7 +876,7 @@ function AdminDashboard({ onLogout }) {
                                         <div key={mission.id} className="border-2 border-gray-300 rounded-lg p-6 hover:shadow-lg transition">
                                             {editingMission === mission.id ? (
                                                 // Mode édition
-                                                <div className="space-y-4">
+                                                <div clssName="space-y-4">
                                                     <div className="grid md:grid-cols-2 gap-4">
                                                         <div>
                                                             <label className="block text-gray-700 font-bold mb-2">Client</label>
