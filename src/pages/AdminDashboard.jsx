@@ -158,8 +158,8 @@ function AdminDashboard({ onLogout }) {
 
             // Filtre par client
             if (missionFilters.client && mission.client_id !== missionFilters.client) return false;
-
-            if (missionFilters.statut && mission.statut !== missionFilters.statut) return false;
+            // Filtre par statut
+            if (missionFilters.status && mission.status !== missionFilters.status) return false;
 
             return true;
         });
