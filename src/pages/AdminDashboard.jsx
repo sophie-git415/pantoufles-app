@@ -438,7 +438,7 @@ function AdminDashboard({ onLogout }) {
 
             {/* Navigation */}
             <nav className="bg-white border-b overflow-x-auto">
-                <div className="max-w-7xl mx-auto px-4 flex gap-8">
+                <div className="max-w-7xl mx-auto px-2 md:px-4 flex gap-2 md:gap-8">
                     <button
                         onClick={() => setActiveTab('accueil')}
                         className={`py-4 px-2 border-b-2 transition whitespace-nowrap ${
@@ -526,7 +526,7 @@ function AdminDashboard({ onLogout }) {
 
                 {/* TAB: Accueil */}
                 {activeTab === 'accueil' && (
-                    <div className="grid md:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-6">
                         <div className="bg-white p-6 rounded-lg shadow">
                             <p className="text-gray-600">Intervenantes</p>
                             <p className="text-4xl font-bold text-purple-600">{intervenants.length}</p>
