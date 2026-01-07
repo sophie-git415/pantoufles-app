@@ -11,10 +11,12 @@ function AdminDashboard({ onLogout }) {
     const [intervenants, setIntervenants] = useState([]);
     const [clients, setClients] = useState([]);
     const [missions, setMissions] = useState([]);
+
     const [loadingClients, setLoadingClients] = useState(false);
     const [loadingIntervenants, setLoadingIntervenants] = useState(false);
     const [loadingMissions, setLoadingMissions] = useState(false);
     const [archiveModalOpen, setArchiveModalOpen] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const [editingClient, setEditingClient] = useState(null);
     const [editingIntervenant, setEditingIntervenant] = useState(null);
@@ -437,87 +439,130 @@ function AdminDashboard({ onLogout }) {
             </header>
 
             {/* Navigation */}
-            <nav className="bg-white border-b overflow-x-auto">
-                <div className="max-w-7xl mx-auto px-2 md:px-4 flex gap-2 md:gap-8">
+            <nav className="bg-white border-b">
+                <div className="max-w-7xl mx-auto px-4 py-4">
+                    {/* MENU BURGER MOBILE */}
                     <button
-                        onClick={() => setActiveTab('accueil')}
-                        className={`py-4 px-2 border-b-2 transition whitespace-nowrap ${
-                            activeTab === 'accueil'
-                                ? 'border-purple-600 text-purple-600'
-                                : 'border-transparent text-gray-600 hover:text-gray-800'
-                        }`}
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        className="md:hidden text-2xl mb-4"
                     >
-                        <Home className="inline mr-2" size={20} />
-                        Accueil
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('missions')}
-                        className={`py-4 px-2 border-b-2 transition whitespace-nowrap ${
-                            activeTab === 'missions'
-                                ? 'border-purple-600 text-purple-600'
-                                : 'border-transparent text-gray-600 hover:text-gray-800'
-                        }`}
-                    >
-                        <Calendar className="inline mr-2" size={20} />
-                        Missions ({missions.length})
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('intervenantes')}
-                        className={`py-4 px-2 border-b-2 transition whitespace-nowrap ${
-                            activeTab === 'intervenantes'
-                                ? 'border-purple-600 text-purple-600'
-                                : 'border-transparent text-gray-600 hover:text-gray-800'
-                        }`}
-                    >
-                        <Users className="inline mr-2" size={20} />
-                        Intervenantes ({intervenants.length})
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('clients')}
-                        className={`py-4 px-2 border-b-2 transition whitespace-nowrap ${
-                            activeTab === 'clients'
-                                ? 'border-purple-600 text-purple-600'
-                                : 'border-transparent text-gray-600 hover:text-gray-800'
-                        }`}
-                    >
-                        <Users className="inline mr-2" size={20} />
-                        Clients ({clients.length})
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('boulecristal')}
-                        className={`py-4 px-2 border-b-2 transition whitespace-nowrap ${
-                            activeTab === 'boulecristal'
-                                ? 'border-purple-600 text-purple-600'
-                                : 'border-transparent text-gray-600 hover:text-gray-800'
-                        }`}
-                    >
-                        <span className="mr-2">🔮</span>
-                        Boule de Cristal
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('map')}
-                        className={`py-4 px-2 border-b-2 transition whitespace-nowrap ${
-                            activeTab === 'map'
-                                ? 'border-purple-600 text-purple-600'
-                                : 'border-transparent text-gray-600 hover:text-gray-800'
-                        }`}
-                    >
-                        <span className="mr-2">🗺️</span>
-                        Carte des Missions
+                        ☰
                     </button>
 
+                    {/* MENU */}
+                    <div className={`${mobileMenuOpen ? 'flex' : 'hidden'} md:flex flex-col md:flex-row gap-2 md:gap-0`}>
+                        {/* Accueil */}
+                        <button
+                            onClick={() => {
+                                setActiveTab('accueil');
+                                setMobileMenuOpen(false);
+                            }}
+                            className={`py-4 px-2 border-b-2 transition whitespace-nowrap ${
+                                activeTab === 'accueil'
+                                    ? 'border-purple-600 text-purple-600'
+                                    : 'border-transparent text-gray-600 hover:text-gray-800'
+                            }`}
+                        >
+                            <Home className="inline mr-2" size={20} />
+                            Accueil
+                        </button>
 
-                    <button
-                        onClick={() => setActiveTab('parametres')}
-                        className={`py-4 px-2 border-b-2 transition whitespace-nowrap ${
-                            activeTab === 'parametres'
-                                ? 'border-purple-600 text-purple-600'
-                                : 'border-transparent text-gray-600 hover:text-gray-800'
-                        }`}
-                    >
-                        <Settings className="inline mr-2" size={20} />
-                        Paramètres
-                    </button>
+                        {/* Missions */}
+                        <button
+                            onClick={() => {
+                                setActiveTab('missions');
+                                setMobileMenuOpen(false);
+                            }}
+                            className={`py-4 px-2 border-b-2 transition whitespace-nowrap ${
+                                activeTab === 'missions'
+                                    ? 'border-purple-600 text-purple-600'
+                                    : 'border-transparent text-gray-600 hover:text-gray-800'
+                            }`}
+                        >
+                            <Calendar className="inline mr-2" size={20} />
+                            Missions ({missions.length})
+                        </button>
+
+                        {/* Intervenantes */}
+                        <button
+                            onClick={() => {
+                                setActiveTab('intervenantes');
+                                setMobileMenuOpen(false);
+                            }}
+                            className={`py-4 px-2 border-b-2 transition whitespace-nowrap ${
+                                activeTab === 'intervenantes'
+                                    ? 'border-purple-600 text-purple-600'
+                                    : 'border-transparent text-gray-600 hover:text-gray-800'
+                            }`}
+                        >
+                            <Users className="inline mr-2" size={20} />
+                            Intervenantes ({intervenants.length})
+                        </button>
+
+                        {/* Clients */}
+                        <button
+                            onClick={() => {
+                                setActiveTab('clients');
+                                setMobileMenuOpen(false);
+                            }}
+                            className={`py-4 px-2 border-b-2 transition whitespace-nowrap ${
+                                activeTab === 'clients'
+                                    ? 'border-purple-600 text-purple-600'
+                                    : 'border-transparent text-gray-600 hover:text-gray-800'
+                            }`}
+                        >
+                            <Users className="inline mr-2" size={20} />
+                            Clients ({clients.length})
+                        </button>
+
+                        {/* Boule de Cristal */}
+                        <button
+                            onClick={() => {
+                                setActiveTab('boulecristal');
+                                setMobileMenuOpen(false);
+                            }}
+                            className={`py-4 px-2 border-b-2 transition whitespace-nowrap ${
+                                activeTab === 'boulecristal'
+                                    ? 'border-purple-600 text-purple-600'
+                                    : 'border-transparent text-gray-600 hover:text-gray-800'
+                            }`}
+                        >
+                            <span className="mr-2">🔮</span>
+                            Boule de Cristal
+                        </button>
+
+                        {/* Carte des Missions */}
+                        <button
+                            onClick={() => {
+                                setActiveTab('map');
+                                setMobileMenuOpen(false);
+                            }}
+                            className={`py-4 px-2 border-b-2 transition whitespace-nowrap ${
+                                activeTab === 'map'
+                                    ? 'border-purple-600 text-purple-600'
+                                    : 'border-transparent text-gray-600 hover:text-gray-800'
+                            }`}
+                        >
+                            <span className="mr-2">🗺️</span>
+                            Carte des Missions
+                        </button>
+
+                        {/* Paramètres */}
+                        <button
+                            onClick={() => {
+                                setActiveTab('parametres');
+                                setMobileMenuOpen(false);
+                            }}
+                            className={`py-4 px-2 border-b-2 transition whitespace-nowrap ${
+                                activeTab === 'parametres'
+                                    ? 'border-purple-600 text-purple-600'
+                                    : 'border-transparent text-gray-600 hover:text-gray-800'
+                            }`}
+                        >
+                            <Settings className="inline mr-2" size={20} />
+                            Paramètres
+                        </button>
+                    </div>
                 </div>
             </nav>
 
