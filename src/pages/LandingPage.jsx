@@ -228,30 +228,30 @@ function LandingPage({ setCurrentPage }) {
         <div className="bg-white">
             {/* HEADER CUSTOMISÉ - CRYSTAL CLAIR */}
             <header className="bg-gradient-to-r from-orange-50 to-yellow-50 shadow-lg sticky top-0 z-50">
-                <div className="max-w-7xl mx-auto px-4 py-2">
-                    <div className="flex justify-between items-center gap-8">
+                <div className="max-w-7xl mx-auto px-2 md:px-4 py-2 md:py-3">
+                    <div className="flex justify-between items-center gap-2 md:gap-8">
                         {/* LOGO HEXAGONAL À GAUCHE */}
                         <div className="flex-shrink-0">
                             <img
                                 src="/pantoufles_logo.png"
                                 alt="PANTOUFLES Logo"
-                                className="h-72 w-60 object-contain"
+                                className="h-24 w-20 md:h-64 md:w-48 object-contain"
                             />
                         </div>
 
                         {/* TEXTE AU CENTRE - CRYSTAL CLAIR */}
                         <div className="flex-grow text-center">
-                            <h1 className="text-4xl md:text-5xl font-bold mb-3">
+                            <h1 className="text-xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-3">
                             <span className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
                                 🧹 MÉNAGE À DOMICILE
                             </span>
                             </h1>
 
-                            <p className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+                            <p className="text-sm md:text-xl lg:text-2xl font-bold text-gray-800 mb-1 md:mb-2">
                                 De 15€/h - Intervenantes certifiées
                             </p>
 
-                            <p className="text-2xl md:text-3xl text-gray-800 font-bold mb-4">
+                            <p className="text-xs md:text-lg text-gray-700 font-semibold mb-2 md:mb-4">
                                 Résidentiel • Bureaux • Cabinets médicaux
                             </p>
 
