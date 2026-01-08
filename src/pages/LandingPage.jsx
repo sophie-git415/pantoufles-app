@@ -244,8 +244,8 @@ function LandingPage({ setCurrentPage }) {
                             <img
                                 src="/pantoufles_logo.png"
                                 alt="PANTOUFLES Logo"
-                                className={`hidden md:block object-contain transition-all duration-300 ${
-                                    isScrolled ? 'h-16 md:h-32 md:w-32' : 'h-24 md:h-64 md:w-48'
+                                className={`object-contain transition-all duration-300 ${
+                                    isScrolled ? 'h-6 md:h-32 md:w-32' : 'h-20 md:h-64 md:w-48'
                                 }`}
                             />
                         </div>
