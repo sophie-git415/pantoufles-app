@@ -17,11 +17,20 @@ function LandingPage({ setCurrentPage }) {
         souhaits: '',
         acceptConditions: false
     });
-
+    const [isScrolled, setIsScrolled] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [expandedFaq, setExpandedFaq] = useState(null);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 50);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -227,31 +236,39 @@ function LandingPage({ setCurrentPage }) {
     return (
         <div className="bg-white">
             {/* HEADER CUSTOMISÉ - CRYSTAL CLAIR */}
-            <header className="bg-gradient-to-r from-orange-50 to-yellow-50 shadow-lg sticky top-0 z-50">
-                <div className="max-w-7xl mx-auto px-2 md:px-4 py-2 md:py-3">
+            <header className={`bg-gradient-to-r from-orange-50 to-yellow-50 shadow-lg sticky top-0 z-50 transition-all duration-300 ${isScrolled ? 'py-1 md:py-1' : 'py-1 md:py-2'}`}>
+                <div className="max-w-7xl mx-auto px-2 md:px-4">
                     <div className="flex justify-between items-center gap-2 md:gap-8">
                         {/* LOGO HEXAGONAL À GAUCHE */}
                         <div className="flex-shrink-0">
                             <img
                                 src="/pantoufles_logo.png"
                                 alt="PANTOUFLES Logo"
-                                className="h-24 w-20 md:h-64 md:w-48 object-contain"
+                                className={`hidden md:block object-contain transition-all duration-300 ${
+                                    isScrolled ? 'h-16 md:h-32 md:w-32' : 'h-24 md:h-64 md:w-48'
+                                }`}
                             />
                         </div>
 
                         {/* TEXTE AU CENTRE - CRYSTAL CLAIR */}
                         <div className="flex-grow text-center">
-                            <h1 className="text-xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-3">
+                            <h1 className={`font-bold mb-2 md:mb-3 transition-all duration-300 ${
+                                isScrolled ? 'text-lg md:text-2xl lg:text-3xl' : 'text-xl md:text-4xl lg:text-5xl'
+                            }`}>
                             <span className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
                                 🧹 MÉNAGE À DOMICILE
                             </span>
                             </h1>
 
-                            <p className="text-sm md:text-xl lg:text-2xl font-bold text-gray-800 mb-1 md:mb-2">
+                            <p className={`font-bold text-gray-800 mb-1 md:mb-2 transition-all duration-300 ${
+                                isScrolled ? 'text-xs md:text-sm lg:text-base' : 'text-sm md:text-xl lg:text-2xl'
+                            }`}>
                                 De 15€/h - Intervenantes certifiées
                             </p>
 
-                            <p className="text-xs md:text-lg text-gray-700 font-semibold mb-2 md:mb-4">
+                            <p className={`text-gray-700 font-semibold mb-2 md:mb-4 transition-all duration-300 ${
+                                isScrolled ? 'text-[10px] md:text-sm' : 'text-xs md:text-lg'
+                            }`}>
                                 Résidentiel • Bureaux • Cabinets médicaux
                             </p>
 
