@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Heart, Home, ChevronDown, Star, Leaf, Shield, Sparkles, Users } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import SunWithRays from '../SunWithRays';
