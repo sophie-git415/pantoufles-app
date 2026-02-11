@@ -1,3 +1,6 @@
+# Maintenance Supabase
+Mise à jour du 11/02/2026 pour maintenir l'activité du projet
+
 # 🎥 Guide Pratique - Enregistrement Vidéo PANTOUFLES
 
 ## 🚀 DÉMARRAGE RAPIDE
