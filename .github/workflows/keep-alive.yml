@@ -2,7 +2,7 @@ name: Keep Supabase Alive
 
 on:
   schedule:
-    - cron: '0 9 */3 * *'  # Toutes les 3 jours à 9h
+    - cron: '0 9 * * *'  # Toutes les 3 jours à 9h
   workflow_dispatch:  # Permet de lancer manuellement aussi
 
 jobs:
