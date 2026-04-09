@@ -33,6 +33,7 @@ export default function BouleDeCristal({ clients, intervenants }) {
   // Charger les missions archivées au montage et au changement de filtres
   useEffect(() => {
     loadArchivedMissions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     filterYear,
     filterMonth,
