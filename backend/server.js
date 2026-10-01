@@ -60,7 +60,7 @@ Philosophie PANTOUFLES : "Même une pantoufle moche a sa place dans la maison"
 Sois toujours courtois, utile et bienveillant dans tes réponses.`;
 
         const message_response = await anthropic.messages.create({
-            model: 'claude-sonnet-4-20250514',
+            model: process.env.CLAUDE_MODEL || 'claude-sonnet-5',
             max_tokens: 1024,
             system: systemPrompt,
             messages: [
